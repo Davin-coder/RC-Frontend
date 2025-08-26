@@ -12,7 +12,7 @@ export default function Retos() {
       <div class="grid gap-4 md:grid-cols-2">
         <div class="relative">
           <input class="w-full rounded-lg border border-gray-200 pl-10 pr-4 py-2 focus:ring-2 focus:ring-purple-500"
-                 placeholder="Buscar retos..."/>
+                placeholder="Buscar retos..."/>
           <span class="absolute left-3 top-2.5 text-gray-400">🔎</span>
         </div>
         <div class="flex flex-wrap items-center gap-2">
