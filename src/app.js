@@ -6,15 +6,31 @@ import Leaderboard from "./pages/leaderboard.js";
 import Galeria from "./pages/galeria.js";
 import Sidebar from "./components/sidebar.js";
 import Navbar from "./components/navbar.js";
-
 const routes = {
   "#/dashboard": Dashboard,
   "#/retos": Retos,
   "#/clan": Clan,
   "#/perfil": Perfil,
   "#/leaderboard": Leaderboard,
-  "#/galeria": Galeria,
+  "#/galeria": Galeria
 };
+
+function getCurrentRole() {
+  return localStorage.getItem("role") || "team_leader"; 
+}
+
+
+// Rutas protegidas por rol
+const PROTECTED = {
+  "#/teamleader": ["team_leader", "admin"],
+};
+
+// ✅ helper
+function isAllowed(hash) {
+  const roles = PROTECTED[hash];
+  if (!roles) return true;              // no protegida
+  return roles.includes(getCurrentRole());
+}
 
 // ✅ Normaliza cualquier hash tipo "#", "#/", "#retos" → "#/dashboard" o "#/retos"
 function normalizeHash(h) {
@@ -25,29 +41,30 @@ function normalizeHash(h) {
 // ✅ Si el path es raro ("/", "//", "///") o el hash vacío, corrige a /#/dashboard
 function ensureCanonicalUrl() {
   const { pathname, hash } = window.location;
-
-  // Si el path tiene más de una barra (//, ///)
   if (/^\/{2,}$/.test(pathname)) {
     history.replaceState(null, "", "/");
   }
-
-  // Si no hay hash o es "#"/"#/", fuerza dashboard
   if (!hash || hash === "#" || hash === "#/") {
     history.replaceState(null, "", "/#/dashboard");
   }
 }
 
 function render() {
-  // Canoniza primero (cubre el caso http://localhost:5173//)
   ensureCanonicalUrl();
 
-  // Si llegó como "#retos" (sin /), corrige 
   if (window.location.hash && !window.location.hash.startsWith("#/")) {
     const fixed = "#/" + window.location.hash.slice(1);
     history.replaceState(null, "", fixed);
   }
 
-  const hash = normalizeHash(window.location.hash);
+  let hash = normalizeHash(window.location.hash);
+
+  // 🔒 GUARD POR ROL (NUEVO)
+  if (!isAllowed(hash)) {
+    history.replaceState(null, "", "#/dashboard");
+    hash = "#/dashboard";
+  }
+
   const View = routes[hash] || Dashboard;
 
   document.getElementById("app").innerHTML = `
@@ -60,9 +77,18 @@ function render() {
     </div>
   `;
 
+
+  // Bloquea clics a rutas protegidas si el rol no alcanza (opcional, UX)
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener("click", (e) => {
       const href = a.getAttribute("href");
+      const target = href && (href.startsWith("#/") ? href : "#/" + href.slice(1));
+      if (target && !isAllowed(target)) {
+        e.preventDefault();
+        history.replaceState(null, "", "#/dashboard");
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+        return;
+      }
       if (href && !href.startsWith("#/")) {
         e.preventDefault();
         window.location.hash = "#/" + href.slice(1);
@@ -73,3 +99,4 @@ function render() {
 
 window.addEventListener("hashchange", render);
 window.addEventListener("load", render);
+

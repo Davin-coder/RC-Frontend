@@ -1,4 +1,9 @@
+// src/components/sidebar.js
+import { isTL, titleByRole } from "../utils/role.js";
+
 export default function Sidebar(active = "#/dashboard") {
+  const showCfg = isTL();
+
   const item = (hash, icon, label) => `
     <a href="${hash}"
        class="flex items-center gap-3 px-4 py-2 rounded-lg transition
@@ -16,12 +21,12 @@ export default function Sidebar(active = "#/dashboard") {
       </div>
 
       <nav class="p-3 flex flex-col gap-1">
-        ${item("#/dashboard","🏠","Dashboard")}
-        ${item("#/retos","📝","Mis Retos")}
-        ${item("#/clan","👥","Mi Clan")}
-        ${item("#/perfil","👤","Perfil")}
-        ${item("#/leaderboard","🏆","Leaderboard")}
-        ${item("#/galeria","🖼️","Galería")}
+        ${item("#/dashboard","🏠", titleByRole("Dashboard","Dashboard"))}
+        ${item("#/retos","📝",      titleByRole("Mis Retos","Gestión de Retos"))}
+        ${item("#/clan","👥",       titleByRole("Mi Clan","Gestión de Clanes"))}
+        ${item("#/perfil","👤",     titleByRole("Perfil","Analíticas"))}
+        ${item("#/leaderboard","🏆",titleByRole("Leaderboard","Gestión de Estudiantes"))}
+        ${item("#/galeria","🖼️",   titleByRole("Galería","Gestión de Galería"))}
       </nav>
 
       <div class="mt-auto p-4 border-t">

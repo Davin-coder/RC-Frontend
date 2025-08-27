@@ -1,4 +1,23 @@
+// src/pages/dashboard.js
+
+function getCurrentRole() {
+  return localStorage.getItem("role") || "coder"; 
+}
+
 export default function Dashboard() {
+  const role = getCurrentRole();
+
+  if (role === "team_leader" || role === "admin") {
+    return TL_DashboardView();
+  }
+
+  return Student_DashboardView();
+}
+
+/* =======================
+   Vista: Estudiante
+   ======================= */
+function Student_DashboardView() {
   return `
     <section class="space-y-6">
       <div>
@@ -69,16 +88,51 @@ export default function Dashboard() {
   `;
 }
 
-function nextChallenge(title, meta, btn) {
+/* =======================
+   Vista: Team Leader
+   ======================= */
+function TL_DashboardView() {
   return `
-    <div class="border rounded-lg p-4 flex items-center justify-between hover:bg-gray-50">
+    <section class="space-y-6">
+      <header class="mb-2">
+        <h1 class="text-3xl font-bold tracking-tight">Panel de Administración</h1>
+        <p class="text-gray-500">Gestiona estudiantes, retos y contenido del bootcamp</p>
+      </header>
+
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        ${StatCard("Estudiantes Activos","124","+12% desde el mes pasado","👥")}
+        ${StatCard("Retos Completados","1,847","+23% desde el mes pasado","🧩")}
+        ${StatCard("Insignias Otorgadas","342","+8% desde el mes pasado","🏆")}
+        ${StatCard("Tasa de Finalización","87%","+5% este mes","📈")}
+      </div>
+    </section>
+  `;
+}
+
+/* =======================
+   Helpers para TL
+   ======================= */
+function StatCard(title, value, sub, icon) {
+  return `
+    <div class="bg-white border rounded-xl p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-sm text-gray-500">${title}</p>
+        <span class="text-xl">${icon || ""}</span>
+      </div>
+      <div class="text-3xl font-semibold">${value}</div>
+      <p class="text-sm text-green-600 mt-1">${sub}</p>
+    </div>
+  `;
+}
+
+function nextChallenge(title, desc, action) {
+  return `
+    <div class="flex items-center justify-between border rounded-lg p-3 hover:bg-gray-50">
       <div>
         <p class="font-medium">${title}</p>
-        <p class="text-xs text-gray-500 mt-1">${meta}</p>
+        <p class="text-sm text-gray-500">${desc}</p>
       </div>
-      <button class="px-3 py-2 rounded-lg bg-white border hover:bg-gray-100">
-        ${btn} <span class="ml-1">➜</span>
-      </button>
+      <button class="text-purple-600 font-medium text-sm">${action}</button>
     </div>
   `;
 }
