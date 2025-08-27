@@ -22,6 +22,7 @@ export default function Sidebar(active = "#/dashboard") {
         ${item("#/perfil","👤","Perfil")}
         ${item("#/leaderboard","🏆","Leaderboard")}
         ${item("#/galeria","🖼️","Galería")}
+        ${item("#/HackathonList","🖼️","hackatonList")}
       </nav>
 
       <div class="mt-auto p-4 border-t">
