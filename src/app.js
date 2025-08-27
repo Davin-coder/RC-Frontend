@@ -20,12 +20,29 @@ const routes = {
   "#/HackathonList": HackathonList,
 };
 
+// ✅ Normaliza cualquier hash tipo "#", "#/", "#retos" → "#/dashboard" o "#/retos"
 function normalizeHash(h) {
-  if (!h || h === "#") return "#/dashboard";
+  if (!h || h === "#" || h === "#/") return "#/dashboard";
   return h.startsWith("#/") ? h : "#/" + h.slice(1);
 }
 
+// ✅ Si el path es raro ("/", "//", "///") o el hash vacío, corrige a /#/dashboard
+function ensureCanonicalUrl() {
+  const { pathname, hash } = window.location;
+
+  // Si el path tiene más de una barra (//, ///)
+  if (/^\/{2,}$/.test(pathname)) {
+    history.replaceState(null, "", "/");
+  }
+
+  // Si no hay hash o es "#"/"#/", fuerza dashboard
+  if (!hash || hash === "#" || hash === "#/") {
+    history.replaceState(null, "", "/#/dashboard");
+  }
+}
+
 function render() {
+  // (opcional) si la URL llegó como "#retos", corrige la barra en la barra de direcciones
   if (window.location.hash && !window.location.hash.startsWith("#/")) {
     const fixed = "#/" + window.location.hash.slice(1);
     history.replaceState(null, "", fixed);
@@ -53,6 +70,17 @@ function render() {
       </div>
     </div>
   `;
+
+  // Si usas enlaces como <a href="#retos">, los normalizamos al hacer clic
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener("click", (e) => {
+      const href = a.getAttribute("href");
+      if (href && !href.startsWith("#/")) {
+        e.preventDefault();
+        window.location.hash = "#/" + href.slice(1);
+      }
+    });
+  });
 }
 
 window.addEventListener("hashchange", render);
