@@ -1,4 +1,20 @@
+// src/pages/retos.js
+
+function getCurrentRole() {
+  return localStorage.getItem("role") || "coder"; // "coder" | "team_leader" | "admin"
+}
+
 export default function Retos() {
+  const role = getCurrentRole();
+  return (role === "team_leader" || role === "admin")
+    ? TL_RetosView()
+    : Student_RetosView();
+}
+
+/* =========
+   Estudiante: Mis Retos
+   ========= */
+function Student_RetosView() {
   return `
     <section class="space-y-6">
       <div class="flex items-center justify-between">
@@ -98,6 +114,72 @@ export default function Retos() {
   `;
 }
 
+/* =========
+   Team Leader: Gestión de Retos
+   ========= */
+function TL_RetosView() {
+  const retos = [
+    { titulo:"Landing Page Responsiva", modulo:"Frontend", dificultad:"Principiante", xp:"100 XP", entregas:45, completados:38 },
+    { titulo:"API REST con Node + Express", modulo:"Backend", dificultad:"Intermedio", xp:"200 XP", entregas:32, completados:24 },
+    { titulo:"Sistema de Autenticación JWT", modulo:"Fullstack", dificultad:"Avanzado", xp:"300 XP", entregas:18, completados:12 },
+  ];
+
+  return `
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold">Gestión de Retos</h1>
+          <p class="text-gray-500">Crea, edita y administra los retos del bootcamp</p>
+        </div>
+        <button class="px-3 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700">+ Crear Reto</button>
+      </div>
+
+      <div class="grid gap-2 md:grid-cols-3">
+        <input class="border rounded-lg px-3 py-2" placeholder="Buscar retos..."/>
+        <select class="border rounded-lg px-3 py-2"><option>Todos los módulos</option><option>Frontend</option><option>Backend</option><option>Fullstack</option></select>
+        <select class="border rounded-lg px-3 py-2"><option>Todas las dificultades</option><option>Principiante</option><option>Intermedio</option><option>Avanzado</option></select>
+      </div>
+
+      <div class="rounded-xl border overflow-hidden bg-white">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 text-gray-600">
+            <tr>
+              <th class="text-left px-4 py-2">Título</th>
+              <th class="text-left px-4 py-2">Módulo</th>
+              <th class="text-left px-4 py-2">Dificultad</th>
+              <th class="text-left px-4 py-2">XP</th>
+              <th class="text-left px-4 py-2">Entregas</th>
+              <th class="text-left px-4 py-2">Completados</th>
+              <th class="px-4 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${retos.map(r => `
+              <tr class="border-t">
+                <td class="px-4 py-2">${r.titulo}</td>
+                <td class="px-4 py-2">${r.modulo}</td>
+                <td class="px-4 py-2">${r.dificultad}</td>
+                <td class="px-4 py-2">${r.xp}</td>
+                <td class="px-4 py-2">${r.entregas}</td>
+                <td class="px-4 py-2">${r.completados}</td>
+                <td class="px-4 py-2">
+                  <div class="flex gap-2">
+                    <button class="px-2 py-1 text-xs rounded border">Editar</button>
+                    <button class="px-2 py-1 text-xs rounded bg-red-100 text-red-700">Eliminar</button>
+                  </div>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+/* =========
+   Helpers reutilizados
+   ========= */
 function chip(text, active=false){
   return `<span class="text-sm px-3 py-1 rounded-full border ${active ? "bg-purple-100 text-purple-700 border-purple-200" : "bg-white text-gray-700 hover:bg-gray-50"}">${text}</span>`;
 }
