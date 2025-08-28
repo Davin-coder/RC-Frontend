@@ -1,9 +1,12 @@
+// main.js
 import Dashboard from "./pages/dashboard.js";
 import Retos from "./pages/retos.js";
 import Clan from "./pages/clan.js";
 import Perfil from "./pages/perfil.js";
 import Leaderboard from "./pages/leaderboard.js";
 import Galeria from "./pages/galeria.js";
+import HackathonDetail from "./pages/hackatonDetail.js";
+import HackathonList from "./pages/hackatonList.js";
 import Sidebar from "./components/sidebar.js";
 import Navbar from "./components/navbar.js";
 const routes = {
@@ -12,7 +15,8 @@ const routes = {
   "#/clan": Clan,
   "#/perfil": Perfil,
   "#/leaderboard": Leaderboard,
-  "#/galeria": Galeria
+  "#/galeria": Galeria,
+  "#/HackathonList": HackathonList,
 };
 
 function getCurrentRole() {
@@ -50,35 +54,42 @@ function ensureCanonicalUrl() {
 }
 
 function render() {
-  ensureCanonicalUrl();
-
   if (window.location.hash && !window.location.hash.startsWith("#/")) {
     const fixed = "#/" + window.location.hash.slice(1);
     history.replaceState(null, "", fixed);
   }
 
-  let hash = normalizeHash(window.location.hash);
+let hash = normalizeHash(window.location.hash);
+let params = {};
 
-  // 🔒 GUARD POR ROL (NUEVO)
-  if (!isAllowed(hash)) {
-    history.replaceState(null, "", "#/dashboard");
-    hash = "#/dashboard";
-  }
+// 🔒 GUARD FOR ROL
+if (!isAllowed(hash)) {
+  history.replaceState(null, "", "#/dashboard");
+  hash = "#/dashboard";
+}
 
-  const View = routes[hash] || Dashboard;
+let View = routes[hash];
+
+// 👇 Detectamos HackathonDetail con id
+if (hash.startsWith("#/HackathonDetail/")) {
+  View = HackathonDetail;
+  params.id = hash.split("/")[2]; // ej: "riwi2024"
+}
+
+if (!View) View = Dashboard;
 
   document.getElementById("app").innerHTML = `
     <div class="flex h-screen">
       ${Sidebar(hash)}
       <div class="flex-1 flex flex-col min-w-0">
         ${Navbar()}
-        <main class="flex-1 overflow-y-auto p-6">${View()}</main>
+        <main class="flex-1 overflow-y-auto p-6">${View(params)}</main>
       </div>
     </div>
   `;
 
 
-  // Bloquea clics a rutas protegidas si el rol no alcanza (opcional, UX)
+  // Si usas enlaces como <a href="#retos">, los normalizamos al hacer clic
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener("click", (e) => {
       const href = a.getAttribute("href");

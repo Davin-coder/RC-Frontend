@@ -27,6 +27,8 @@ export default function Sidebar(active = "#/dashboard") {
         ${item("#/perfil","👤",     titleByRole("Perfil","Analíticas"))}
         ${item("#/leaderboard","🏆",titleByRole("Leaderboard","Gestión de Estudiantes"))}
         ${item("#/galeria","🖼️",   titleByRole("Galería","Gestión de Galería"))}
+        ${item("#/HackathonList","🖼️",titleByRole("HackathonList","Gestion de Hackathon"))}
+
       </nav>
 
       <div class="mt-auto p-4 border-t">
