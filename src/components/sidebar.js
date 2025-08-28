@@ -30,18 +30,6 @@ export default function Sidebar(active = "#/dashboard") {
         ${item("#/HackathonList","🖼️",titleByRole("HackathonList","Gestion de Hackathon"))}
 
       </nav>
-
-      <div class="mt-auto p-4 border-t">
-        <div class="flex items-center gap-3">
-          <div class="h-10 w-10 rounded-full bg-gray-200 overflow-hidden">
-            <img src="https://i.pravatar.cc/100?img=12" class="h-full w-full object-cover" alt="avatar"/>
-          </div>
-          <div class="min-w-0">
-            <p class="font-semibold truncate">Alex Rodríguez</p>
-            <p class="text-xs text-gray-500 truncate">Clan: Los Debuggers</p>
-          </div>
-        </div>
-      </div>
     </aside>
   `;
 }
