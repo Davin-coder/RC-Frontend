@@ -12,9 +12,15 @@ import Sidebar, { initSidebarEvents } from "./components/sidebar.js";
 import Navbar from "./components/navbar.js";
 import { userStore } from "./utils/userStore.js";
 
-/* =================
-   Helper de layout
-================= */
+// 🔁 Navegación que SIEMPRE asegura un render
+function navigate(hash) {
+  if (window.location.hash !== hash) {
+    window.location.hash = hash; // dispara hashchange
+  } else {
+    window.dispatchEvent(new HashChangeEvent("hashchange")); // fuerza render
+  }
+}
+
 function renderLayout(activeHash, innerHtml) {
   const app = document.getElementById("app");
   app.innerHTML = `
@@ -31,85 +37,77 @@ function renderLayout(activeHash, innerHtml) {
   initSidebarEvents?.();
 }
 
-/* =================
-   Rutas disponibles
-================= */
 const routes = {
   "#/login": () => {
     const app = document.getElementById("app");
     app.innerHTML = LoginView();
     initLoginEvents?.();
   },
-
   "#/dashboard": () => {
     renderLayout("#/dashboard", Dashboard());
     initDashboardEvents?.();
   },
-
   "#/retos": () => {
     renderLayout("#/retos", Retos());
     const role = userStore.role();
-    (role === "team_leader" || role === "admin")
-      ? initTLRetosEvents?.()
-      : initRetosEvents?.();
+    (role === "team_leader" || role === "admin") ? initTLRetosEvents?.() : initRetosEvents?.();
   },
-
   "#/clan": () => {
     renderLayout("#/clan", Clan());
     initClanEvents?.();
   },
-
-  "#/perfil" : () => {
-  renderLayout("#/perfil", Perfil());
-  initPerfilEvents?.();
+  "#/perfil": () => {
+    renderLayout("#/perfil", Perfil());
+    initPerfilEvents?.();
   },
-
-  "#/leaderboard" : () => {
-  renderLayout("#/leaderboard", Leaderboard());
-  initLeaderboardEvents?.();
+  "#/leaderboard": () => {
+    renderLayout("#/leaderboard", Leaderboard());
+    initLeaderboardEvents?.();
   },
-
   "#/galeria": () => {
-  renderLayout("#/galeria", Galeria());
-  initGaleriaEvents?.();
+    renderLayout("#/galeria", Galeria());
+    initGaleriaEvents?.();
   },
   "#/HackathonList": () => {
-  renderLayout("#/HackathonList", HackathonList());
-  initHackathonListEvents?.();
-}
+    renderLayout("#/HackathonList", HackathonList());
+    initHackathonListEvents?.();
+  }
 };
 
-/* =================
-   Normalizador hash
-================= */
 function normalizeHash(h) {
   if (!h || h === "#" || h === "#/") return "#/dashboard";
   return h.startsWith("#/") ? h : "#/" + h.slice(1);
 }
 
-/* =================
-   Render principal
-================= */
 function render() {
   let hash = normalizeHash(window.location.hash);
-
-  // 🚦 Guard con localStorage (sin /me)
   const isLogged = !!userStore.get();
+
+  console.log("[router] hash=", hash, " isLogged=", isLogged);
+
+  // 🚦 Guard usando navigate() en vez de replaceState
   if (!isLogged && hash !== "#/login") {
-    hash = "#/login";
-    history.replaceState(null, "", hash);
+    console.log("[router] no logueado → login");
+    navigate("#/login");
+    return;
   }
   if (isLogged && hash === "#/login") {
-    hash = "#/dashboard";
-    history.replaceState(null, "", hash);
+    console.log("[router] ya logueado en /login → dashboard");
+    navigate("#/dashboard");
+    return;
   }
 
   const route = routes[hash] || routes["#/dashboard"];
-  route();
+  try {
+    route();
+  } catch (err) {
+    console.error("[router] error en la ruta", hash, err);
+    // fallback seguro
+    navigate("#/login");
+  }
 }
 
-/* =================
-   Listeners globales
-================= */
 window.addEventListener("hashchange", render);
 window.addEventListener("load", render);
+
+export { navigate };

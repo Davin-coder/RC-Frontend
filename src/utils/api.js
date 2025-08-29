@@ -1,26 +1,50 @@
 // src/utils/api.js
-const BASE = "http://localhost:3000";
+const BASE_URL = "http://localhost:3000";
 
 export const AuthAPI = {
   async login(email, password_user) {
-    const res = await fetch(`${BASE}/users/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password_user }),
-    });
-    return res.json(); // backend devuelve { success, message, user: {...} }
+    try {
+      const res = await fetch(`${BASE_URL}/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // cookies/sesiones
+        body: JSON.stringify({ email, password_user }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        return { ok: false, msg: data?.msg || data?.message || `HTTP ${res.status}` };
+      }
+
+      if (data?.user) {
+        // 👇 NO guardar aquí el user (lo hace login.js)
+        return { ok: true, user: data.user, msg: data?.message || "Login exitoso" };
+      }
+
+      return { ok: false, msg: data?.msg || "Credenciales inválidas" };
+    } catch (err) {
+      console.error("AuthAPI.login error", err);
+      return { ok: false, msg: "No se pudo conectar al servidor" };
+    }
   },
+
   async logout() {
-    await fetch(`${BASE}/users/logout`, { method: "POST", credentials: "include" });
-    // no importa la respuesta, limpiamos igual
+    try {
+      await fetch(`${BASE_URL}/users/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      // Lo limpiamos fuera (por ejemplo, en un handler onClick)
+    }
   },
 };
 
 // (ejemplo) retos
 export const ChallengesAPI = {
   async list() {
-    const res = await fetch(`${BASE}/challenges`, { credentials: "include" });
+    const res = await fetch(`${BASE_URL}/challenges`, { credentials: "include" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
     return data.challenge || []; // <- tu backend envuelve así
@@ -30,7 +54,7 @@ export const ChallengesAPI = {
 // --- GRUPOS ---
 export const GroupsAPI = {
   async list() {
-    const res = await fetch(`${BASE}/groups`, { credentials: "include" });
+    const res = await fetch(`${BASE_URL}/groups`, { credentials: "include" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
     // tu backend suele devolver { groups: [...] }
@@ -39,7 +63,7 @@ export const GroupsAPI = {
 
   // estos endpoints pueden variar en tu backend; déjalos así y luego ajustamos rutas/campos
   async create(payload) {
-    const res = await fetch(`${BASE}/groups`, {
+    const res = await fetch(`${BASE_URL}/groups`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -51,7 +75,7 @@ export const GroupsAPI = {
   },
 
   async update(id, payload) {
-    const res = await fetch(`${BASE}/groups/${id}`, {
+    const res = await fetch(`${BASE_URL}/groups/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -63,7 +87,7 @@ export const GroupsAPI = {
   },
 
   async remove(id) {
-    const res = await fetch(`${BASE}/groups/${id}`, {
+    const res = await fetch(`${BASE_URL}/groups/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -74,7 +98,7 @@ export const GroupsAPI = {
 
   // Opcionales: dependen de tu backend
   async addMember(id, email) {
-    const res = await fetch(`${BASE}/groups/${id}/members`, {
+    const res = await fetch(`${BASE_URL}/groups/${id}/members`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -86,7 +110,7 @@ export const GroupsAPI = {
   },
 
   async removeMember(id, userId) {
-    const res = await fetch(`${BASE}/groups/${id}/members/${userId}`, {
+    const res = await fetch(`${BASE_URL}/groups/${id}/members/${userId}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -101,8 +125,8 @@ export const GroupsAPI = {
 export const UsersAPI = {
   async update(id, payload) {
     // deja solo el endpoint que ya tengas; si falla, el front seguirá guardando localmente
-    const BASE = "http://localhost:3000";
-    const res = await fetch(`${BASE}/users/${id}`, {
+
+    const res = await fetch(`${BASE_URL}/users/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -126,7 +150,7 @@ export const UsersAPI = {
 export const LeaderboardAPI = {
   async topCoders(limit = 5) {
     try {
-      const res = await fetch(`${BASE}/leaderboard/top?limit=${limit}`, {
+      const res = await fetch(`${BASE_URL}/leaderboard/top?limit=${limit}`, {
         credentials: "include",
       });
       const data = await res.json().catch(() => ({}));
@@ -147,7 +171,7 @@ export const LeaderboardAPI = {
 
   async topClans(limit = 3) {
     try {
-      const res = await fetch(`${BASE}/leaderboard/clans?limit=${limit}`, {
+      const res = await fetch(`${BASE_URL}/leaderboard/clans?limit=${limit}`, {
         credentials: "include",
       });
       const data = await res.json().catch(() => ({}));
@@ -170,9 +194,9 @@ export const ProjectsAPI = {
   async list() {
     // Intentamos varias rutas comunes sin romper si alguna no existe:
     const candidates = [
-      `${BASE}/projects/submissions`,
-      `${BASE}/project_submissions`,
-      `${BASE}/gallery/projects`,
+      `${BASE_URL}/projects/submissions`,
+      `${BASE_URL}/project_submissions`,
+      `${BASE_URL}/gallery/projects`,
     ];
     for (const url of candidates) {
       try {
@@ -315,7 +339,7 @@ function cryptoLike(x) {
 export const HackathonsAPI = {
   async list() {
     try {
-      const res = await fetch(`${BASE}/hackathons`, { credentials: "include" });
+      const res = await fetch(`${BASE_URL}/hackathons`, { credentials: "include" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
       const arr = Array.isArray(data?.hackathons) ? data.hackathons : (Array.isArray(data) ? data : []);
@@ -328,7 +352,7 @@ export const HackathonsAPI = {
   async getById(id) {
     // intenta /hackathons/:id y si no existe, cae al list() y busca en memoria
     try {
-      const res = await fetch(`${BASE}/hackathons/${encodeURIComponent(id)}`, { credentials: "include" });
+      const res = await fetch(`${BASE_URL}/hackathons/${encodeURIComponent(id)}`, { credentials: "include" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
       return normalizeHackathon(data?.hackathon || data);
