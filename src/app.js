@@ -26,12 +26,10 @@ function renderLayout(activeHash, innerHtml) {
   app.innerHTML = `
     <div class="flex h-screen">
       ${Sidebar(activeHash)}
-      <div class="flex-1 flex flex-col min-w-0">
-        ${Navbar()}
+      
         <main class="flex-1 overflow-y-auto p-6">
           ${innerHtml}
         </main>
-      </div>
     </div>
   `;
   initSidebarEvents?.();
