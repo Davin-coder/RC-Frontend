@@ -14,7 +14,7 @@ export default function Perfil() {
    ========= */
 function Student_ProfileView() {
   const u = userStore.get() || {};
-  const initialsText = initials(u.first_name || u.name || u.email || "U");
+  const initialsText = initials(u.first_name || u.name || u.email || u.id_clan ||"U");
 
   // roles/skills SOLO desde store (sin llamadas al backend)
   const rolesFromStore = collectRolesFromStore(u);
@@ -32,7 +32,7 @@ function Student_ProfileView() {
             <div class="h-20 w-20 rounded-full bg-purple-100 text-purple-700 grid place-content-center text-2xl font-bold">
               ${initialsText}
             </div>
-            <h3 class="mt-3 text-lg font-semibold">${escapeHtml(u.first_name || u.name || u.email || "Usuario")}</h3>
+            <h3 class="mt-3 text-lg font-semibold">${u.first_name || u.name || u.email || "Usuario"}</h3>
 
             <!-- Badges de roles -->
             <div class="flex flex-wrap gap-2 mt-2">
@@ -43,9 +43,8 @@ function Student_ProfileView() {
           </div>
 
           <div class="mt-5 grid gap-3">
-            ${row("Email", escapeHtml(u.email || "—"))}
-            ${row("Clan", escapeHtml(u.group_name || u.clan || "—"))}
-            ${row("ID", escapeHtml(String(u.id_user || u.id || "—")))}
+            ${row("Email", u.email )}
+            ${row("Clan", u.id_clan)}
           </div>
         </div>
 
@@ -56,15 +55,12 @@ function Student_ProfileView() {
             ${input("Nombre", u.first_name || u.name || "", "first_name")}
             ${input("Apellido", u.last_name || "", "last_name")}
             ${input("Email", u.email || "", "email", "email")}
-            ${input("Ubicación", u.location || "", "location")}
             <div class="md:col-span-2">
               <label class="text-sm text-gray-600">Biografía</label>
               <textarea name="bio" class="w-full mt-1 rounded-lg border border-gray-200 p-2 focus:ring-2 focus:ring-purple-500" rows="4">${
-                escapeHtml(u.bio || "")
+                u.bio
               }</textarea>
             </div>
-            ${input("GitHub", u.github || "", "github", "url")}
-            ${input("LinkedIn", u.linkedin || "", "linkedin", "url")}
             <div class="md:col-span-2 flex items-center gap-3">
               <button type="submit" class="px-5 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700">Guardar Cambios</button>
               <span id="profile-msg" class="text-sm text-gray-500"></span>
@@ -137,8 +133,6 @@ export function initPerfilEvents() {
       email:      fd.get("email")?.trim() || "",
       location:   fd.get("location")?.trim() || "",
       bio:        fd.get("bio")?.trim() || "",
-      github:     fd.get("github")?.trim() || "",
-      linkedin:   fd.get("linkedin")?.trim() || "",
     };
 
     try {
@@ -233,7 +227,7 @@ function collectSkillsFromStore(u) {
 }
 
 function roleBadge(name) {
-  return `<span class="text-xs px-2 py-0.5 rounded bg-purple-100 text-purple-700 border border-purple-200">${escapeHtml(name)}</span>`;
+  return `<span class="text-xs px-2 py-0.5 rounded bg-purple-100 text-purple-700 border border-purple-200">${name}</span>`;
 }
 function normalizeRoleName(raw) {
   const t = (typeof raw === "string" ? raw : (raw?.role_name || raw?.name || raw?.role || "")).toString().toLowerCase();
@@ -254,15 +248,15 @@ function input(label, value="", name="field", type="text"){
   return `
     <div>
       <label class="text-sm text-gray-600">${label}</label>
-      <input name="${name}" type="${type}" value="${escapeHtml(value)}"
+      <input name="${name}" type="${type}" value="${value}"
              class="w-full mt-1 rounded-lg border border-gray-200 p-2 focus:ring-2 focus:ring-purple-500"/>
     </div>`;
 }
 function skillRow(name, level) {
   return `
-    <div class="mb-3 cursor-pointer select-none" data-skill="${escapeHtml(name)}" data-level="${level}">
+    <div class="mb-3 cursor-pointer select-none" data-skill="${name}" data-level="${level}">
       <div class="flex justify-between text-sm mb-1">
-        <span>${escapeHtml(name)}</span><span>${level}/5</span>
+        <span>${name}</span><span>${level}/5</span>
       </div>
       <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
         <div class="h-full bg-purple-500" style="width:${(Math.max(1, Math.min(5, level)) / 5) * 100}%"></div>
@@ -271,7 +265,7 @@ function skillRow(name, level) {
   `;
 }
 function initials(name) { return name.split(/\s+/).map(n => n[0]).join("").slice(0, 2).toUpperCase(); }
-function escapeHtml(s="") { return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+// function escapeHtml(s="") { return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
 
 /* =========
    Vista TL (igual que antes)

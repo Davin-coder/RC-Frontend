@@ -42,11 +42,6 @@ export default function LoginView() {
                 </div>
               </div>
 
-              <div class="flex items-center space-x-2">
-                <input id="remember" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600" />
-                <label for="remember" class="text-sm text-gray-600">Recordarme</label>
-              </div>
-
               <button type="submit" class="w-full h-12 bg-blue-600 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors duration-200">
                 Iniciar Sesión
               </button>

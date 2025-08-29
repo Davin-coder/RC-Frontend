@@ -1,6 +1,7 @@
 export const userStore = {
   get() {
     try {
+      console.log (JSON.parse(localStorage.getItem("user") || "null"));
       return JSON.parse(localStorage.getItem("user") || "null");
     } catch {
       return null;
@@ -30,7 +31,7 @@ export const userStore = {
 
   name() {
     const u = this.get();
-    return u?.first_name || u?.name || u?.email || "Usuario";
+    return u?.first_name || u?.name || u?.email || u?.id_clan || "Usuario";
   },
 };
 

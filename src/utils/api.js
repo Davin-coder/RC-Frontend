@@ -12,6 +12,7 @@ export const AuthAPI = {
       });
 
       const data = await res.json().catch(() => ({}));
+      console.log("siuuuuuuuuuuuuuuuu", data)
 
       if (!res.ok) {
         return { ok: false, msg: data?.msg || data?.message || `HTTP ${res.status}` };
