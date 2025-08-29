@@ -1,26 +1,26 @@
-// src/pages/leaderboard.js
-import { userStore } from "../utils/userStore.js";
+// // src/pages/leaderboard.js
+// import { userStore } from "../utils/userStore.js";
 
-/* =========
-   Router entry
-   ========= */
-export default function Mentoria() {
-  const role = (userStore.role() || "coder").toLowerCase();
-  const isTL = role === "team_leader" || role === "admin";
+// /* =========
+//    Router entry
+//    ========= */
+// export default function Mentoria() {
+//   const role = (userStore.role() || "coder").toLowerCase();
+//   const isTL = role === "team_leader" || role === "admin";
 
-  // 1) Pick the view to render
-  const view = isTL
-    ? TeamLeader_GestionMentoringView()
-    : Coder_GestionMentoringView();
+//   // 1) Pick the view to render
+//   const view = isTL
+//     ? TeamLeader_GestionMentoringView()
+//     : Coder_GestionMentoringView();
 
-  // 2) Defer controller so it runs after the view is mounted in the DOM
-  requestAnimationFrame(() => {
-    (isTL ? TeamLeader_GestionMentoringController : Coder_GestionMentoringController)();
-  });
+//   // 2) Defer controller so it runs after the view is mounted in the DOM
+//   requestAnimationFrame(() => {
+//     (isTL ? TeamLeader_GestionMentoringController : Coder_GestionMentoringController)();
+//   });
 
-  // 3) Return the HTML
-  return view;
-}
+//   // 3) Return the HTML
+//   return view;
+// }
 
 /* ========================================
    Vista Estudiante: Leaderboard dinámico
@@ -29,21 +29,21 @@ export default function Mentoria() {
  render the view, 
  --------------------------just HTML CONTENT------------------------------*/
 
-function Coder_GestionMentoringView() {
-  return `
-    <section class="space-y-6">
-      <h1 class="text-2xl md:text-3xl font-bold">Mentoring</h1>
-    </section>
-  `;
-}
+// function Coder_GestionMentoringView() {
+//   return `
+//     <section class="space-y-6">
+//       <h1 class="text-2xl md:text-3xl font-bold">Mentoring</h1>
+//     </section>
+//   `;
+// }
 
 /****Coder_GestionMentoringController this section is in charge of 
  control the view above, this code below will control the html content. 
  -----------------------Just JAVASCRIPT CONTENT*------------------------******/
 
-export async function Coder_GestionMentoringController() {
-    console.log("Hello from Coder_GestionMentoringController")
-}
+// export async function Coder_GestionMentoringController() {
+//     console.log("Hello from Coder_GestionMentoringController")
+// }
 
 /* ====================================================
    Vista Team Leader: Gestión de Estudiantes (tu mock)
@@ -51,20 +51,20 @@ export async function Coder_GestionMentoringController() {
 
 /****TeamLeader_GestionMentoringView this section is in charge of 
  render the view, just HTML CONTENT*******/
-function TeamLeader_GestionMentoringView() {
+// function TeamLeader_GestionMentoringView() {
 
-  return `
-    <section class="space-y-6">
-      <h1 class="text-2xl md:text-3xl font-bold">My Mentorings</h1>
-    </section>
-  `;
-}
+//   return `
+//     <section class="space-y-6">
+//       <h1 class="text-2xl md:text-3xl font-bold">My Mentorings</h1>
+//     </section>
+//   `;
+// }
 
 /****TeamLeader_GestionMentoringController this section is in charge of 
  control the view above, this code below will control the html content. 
  -----------------------Just JAVASCRIPT CONTENT*------------------------******/
-export function TeamLeader_GestionMentoringController() {
-    console.log("Hello from TeamLeader_GestionMentoringController")
-}
+// export function TeamLeader_GestionMentoringController() {
+//     console.log("Hello from TeamLeader_GestionMentoringController")
+// }
 
 //TYPE ALL THE FUNCTIONS YOU MAY NEED BELLOW

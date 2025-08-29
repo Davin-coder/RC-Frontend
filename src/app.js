@@ -4,7 +4,7 @@ import Dashboard, { initDashboardEvents } from "./pages/dashboard.js";
 import Retos, { initRetosEvents, initTLRetosEvents } from "./pages/retos.js";
 import Clan, { initClanEvents } from "./pages/clan.js";
 import Perfil, { initPerfilEvents } from "./pages/perfil.js";
-import Mentoria, { Coder_GestionMentoringController, TeamLeader_GestionMentoringController }  from "./pages/mentoria.js";
+import Mentoria  from "./routes/mentoriaRoutes/mentoria.js";
 import Galeria, { initGaleriaEvents } from "./pages/galeria.js";
 import HackathonList, { initHackathonListEvents } from "./pages/hackatonList.js";
 
