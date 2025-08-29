@@ -59,8 +59,7 @@ const routes = {
   },
   "#/mentoria": () => {
     renderLayout("#/mentoria", Mentoria());
-    Coder_GestionMentoringController?.();
-    TeamLeader_GestionMentoringController?.();
+    
   },
   "#/galeria": () => {
     renderLayout("#/galeria", Galeria());

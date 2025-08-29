@@ -1,6 +1,8 @@
 // src/pages/hackatonList.js
 import { HackathonsAPI } from "../utils/api.js";
 
+
+
 export default function HackathonList() {
   return `
     <section class="p-6 space-y-6">

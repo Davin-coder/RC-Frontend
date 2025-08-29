@@ -6,9 +6,20 @@ import { userStore } from "../utils/userStore.js";
    ========= */
 export default function Mentoria() {
   const role = (userStore.role() || "coder").toLowerCase();
-  return (role === "team_leader" || role === "admin")
+  const isTL = role === "team_leader" || role === "admin";
+
+  // 1) Pick the view to render
+  const view = isTL
     ? TeamLeader_GestionMentoringView()
     : Coder_GestionMentoringView();
+
+  // 2) Defer controller so it runs after the view is mounted in the DOM
+  requestAnimationFrame(() => {
+    (isTL ? TeamLeader_GestionMentoringController : Coder_GestionMentoringController)();
+  });
+
+  // 3) Return the HTML
+  return view;
 }
 
 /* ========================================
