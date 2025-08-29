@@ -4,12 +4,11 @@ import Dashboard, { initDashboardEvents } from "./pages/dashboard.js";
 import Retos, { initRetosEvents, initTLRetosEvents } from "./pages/retos.js";
 import Clan, { initClanEvents } from "./pages/clan.js";
 import Perfil, { initPerfilEvents } from "./pages/perfil.js";
-import Leaderboard, { initLeaderboardEvents } from "./pages/leaderboard.js";
+import Mentoria, { Coder_GestionMentoringController, TeamLeader_GestionMentoringController }  from "./pages/mentoria.js";
 import Galeria, { initGaleriaEvents } from "./pages/galeria.js";
 import HackathonList, { initHackathonListEvents } from "./pages/hackatonList.js";
 
 import Sidebar, { initSidebarEvents } from "./components/sidebar.js";
-import Navbar from "./components/navbar.js";
 import { userStore } from "./utils/userStore.js";
 
 // 🔁 Navegación que SIEMPRE asegura un render
@@ -58,9 +57,10 @@ const routes = {
     renderLayout("#/perfil", Perfil());
     initPerfilEvents?.();
   },
-  "#/leaderboard": () => {
-    renderLayout("#/leaderboard", Leaderboard());
-    initLeaderboardEvents?.();
+  "#/mentoria": () => {
+    renderLayout("#/mentoria", Mentoria());
+    Coder_GestionMentoringController?.();
+    TeamLeader_GestionMentoringController?.();
   },
   "#/galeria": () => {
     renderLayout("#/galeria", Galeria());

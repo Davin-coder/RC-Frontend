@@ -145,49 +145,60 @@ export const UsersAPI = {
   async getRoles() { return []; },
   async getSkills() { return []; },
 };
+// --- MENTORIA ---
+
+export const MentoringAPI = {
+  
+}
+
+
+
+
+
+
 
 // --- LEADERBOARD ---
 
-export const LeaderboardAPI = {
-  async topCoders(limit = 5) {
-    try {
-      const res = await fetch(`${BASE_URL}/leaderboard/top?limit=${limit}`, {
-        credentials: "include",
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
-      // Esperamos un array tipo: [{id_user, name, clan, xp_total, days_streak, initials?}]
-      return Array.isArray(data?.coders) ? data.coders : data;
-    } catch {
-      // Fallback (mock) para no romper la vista si el endpoint no existe todavía
-      return [
-        { id_user: 2,  name: "Sofía Chen",      clan: "Code Warriors", xp_total: 3250, days_streak: 15 },
-        { id_user: 1,  name: "Miguel Torres",   clan: "Dev Masters",   xp_total: 3100, days_streak: 12 },
-        { id_user: 3,  name: "Isabella García", clan: "Tech Titans",   xp_total: 2980, days_streak: 18 },
-        { id_user: 4,  name: "David Kim",       clan: "Byte Ninjas",   xp_total: 2890, days_streak: 9  },
-        { id_user: 10, name: "Alex Rodríguez",  clan: "Los Debuggers", xp_total: 2450, days_streak: 11 },
-      ];
-    }
-  },
+// export const LeaderboardAPI = {
+//   async topCoders(limit = 5) {
+//     try {
+//       const res = await fetch(`${BASE_URL}/leaderboard/top?limit=${limit}`, {
+//         credentials: "include",
+//       });
+//       const data = await res.json().catch(() => ({}));
+//       if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
+//       // Esperamos un array tipo: [{id_user, name, clan, xp_total, days_streak, initials?}]
+//       return Array.isArray(data?.coders) ? data.coders : data;
+//     } catch {
+//       // Fallback (mock) para no romper la vista si el endpoint no existe todavía
+//       return [
+//         { id_user: 2,  name: "Sofía Chen",      clan: "Code Warriors", xp_total: 3250, days_streak: 15 },
+//         { id_user: 1,  name: "Miguel Torres",   clan: "Dev Masters",   xp_total: 3100, days_streak: 12 },
+//         { id_user: 3,  name: "Isabella García", clan: "Tech Titans",   xp_total: 2980, days_streak: 18 },
+//         { id_user: 4,  name: "David Kim",       clan: "Byte Ninjas",   xp_total: 2890, days_streak: 9  },
+//         { id_user: 10, name: "Alex Rodríguez",  clan: "Los Debuggers", xp_total: 2450, days_streak: 11 },
+//       ];
+//     }
+//   },
 
-  async topClans(limit = 3) {
-    try {
-      const res = await fetch(`${BASE_URL}/leaderboard/clans?limit=${limit}`, {
-        credentials: "include",
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
-      // Esperamos: [{id_group, name, members_count, leader, xp_total}]
-      return Array.isArray(data?.clans) ? data.clans : data;
-    } catch {
-      return [
-        { id_group: 7,  name: "Code Warriors", members_count: 8,  leader: "Sofía Chen",    xp_total: 18500 },
-        { id_group: 12, name: "Dev Masters",   members_count: 7,  leader: "Miguel Torres", xp_total: 16800 },
-        { id_group: 5,  name: "Los Debuggers", members_count: 5,  leader: "Alex Rodríguez",xp_total: 9500  },
-      ];
-    }
-  },
-};
+//   async topClans(limit = 3) {
+//     try {
+//       const res = await fetch(`${BASE_URL}/leaderboard/clans?limit=${limit}`, {
+//         credentials: "include",
+//       });
+//       const data = await res.json().catch(() => ({}));
+//       if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
+//       // Esperamos: [{id_group, name, members_count, leader, xp_total}]
+//       return Array.isArray(data?.clans) ? data.clans : data;
+//     } catch {
+//       return [
+//         { id_group: 7,  name: "Code Warriors", members_count: 8,  leader: "Sofía Chen",    xp_total: 18500 },
+//         { id_group: 12, name: "Dev Masters",   members_count: 7,  leader: "Miguel Torres", xp_total: 16800 },
+//         { id_group: 5,  name: "Los Debuggers", members_count: 5,  leader: "Alex Rodríguez",xp_total: 9500  },
+//       ];
+//     }
+//   },
+// };
 
 // --- PROJECTS (galería) ---
 

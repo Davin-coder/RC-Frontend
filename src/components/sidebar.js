@@ -44,7 +44,7 @@ export default function Sidebar(active = "#/dashboard") {
       ${item("#/retos",        "file-text",  titleByRole("Mis Retos","Gestión de Retos"))}
       ${item("#/clan",         "users",      titleByRole("Mi Clan","Gestión de Clanes"))}
       ${item("#/perfil",       "user",       titleByRole("Perfil","Analíticas"))}
-      ${item("#/leaderboard",  "trophy",     titleByRole("Leaderboard","Gestión de Estudiantes"))}
+      ${item("#/mentoria",  "trophy",     titleByRole("Mentoria","Gestión de Estudiantes"))}
       ${item("#/galeria",      "image",      titleByRole("Galería","Gestión de Galería"))}
       ${item("#/HackathonList","rocket",     titleByRole("Hackathons","Gestión de Hackathons"))}
     </nav>
