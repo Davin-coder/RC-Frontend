@@ -5,9 +5,7 @@ import { ChallengesAPI } from "../utils/api.js";
 export function initDashboardEvents() {
   const container = document.getElementById("challenges-list");
   if (!container) return;
-
   container.innerHTML = `<div class="col-span-full text-sm text-gray-500">Cargando retos…</div>`;
-
   (async () => {
     try {
       const challenges = await ChallengesAPI.list(); // [{id_challenge, title, challenge_desc, difficulty}]
@@ -53,6 +51,7 @@ function difficultyLabel(diff) {
 }
 
 function challengeCard(ch) {
+  debugger
   const { text, cls } = difficultyLabel(ch.difficulty);
   const title = escapeHtml(ch.title);
   const desc = escapeHtml(ch.challenge_desc || "Sin descripción");

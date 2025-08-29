@@ -5,7 +5,7 @@ export const AuthAPI = {
     const res = await fetch(`${BASE}/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",              // <-- MUY IMPORTANTE
+      credentials: "include", // <-- MUY IMPORTANTE
       body: JSON.stringify({ email, password_user }),
     });
     return res.json();
@@ -20,15 +20,21 @@ export const AuthAPI = {
       credentials: "include",
     });
     return res.json();
-  },
+  }
 };
 
 export const ChallengesAPI = {
   async list() {
-    const BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    const res = await fetch(`${BASE}/challenges`, { credentials: "include" });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
-    return Array.isArray(data) ? data : (data.challenges || []);
-  },
+    debugger
+    try {
+      const res = await fetch(`${BASE}/challenges`, { credentials: "include" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
+      console.log(data.challenge);
+      return data.challenge || [];
+    } catch (error) {
+      console.error("Error loading challenges:", error.message);
+      return []; // Retornar array vacío en caso de error
+    }
+  }
 };
