@@ -1,15 +1,31 @@
+// main.js
 import HomeView from "./src/pages/home.js";
 import ChallengesView from "./src/pages/challenges.js";
-import HackathonList from "./pages/HackathonList.js"
-import HackathonDetail from "./pages/HackathonDetail.js"
-
+import HackathonList from "./pages/HackathonList.js";
+import HackathonDetail from "./pages/HackathonDetail.js";
+import { AuthAPI } from "./src/utils/api.js"; // 👈 nuevo
 
 const routes = {
   "/": HomeView,
   "/challenges": ChallengesView,
   "/hackathon": HackathonList,
-  "/hackathon/:id": HackathonDetail, 
+  "/hackathon/:id": HackathonDetail,
 };
+
+// 👇 NUEVO: bootstrap del rol desde el backend
+async function bootstrapRole() {
+  try {
+    const me = await AuthAPI.me(); // backend debe responder { role: "team_leader" | "coder" | "admin", ... }
+    if (me?.role) {
+      localStorage.setItem("role", me.role);
+    } else {
+      localStorage.setItem("role", "coder");
+    }
+  } catch {
+    // Si no hay sesión, dejamos rol por defecto
+    localStorage.setItem("role", "coder");
+  }
+}
 
 function router() {
   const path = window.location.pathname;
@@ -46,5 +62,8 @@ function router() {
 // Manejar la navegación con botones del navegador
 window.addEventListener("popstate", router);
 
-// Primera carga
-router();
+// 👇 NUEVO: primera carga con bootstrap de rol antes de renderizar
+window.addEventListener("DOMContentLoaded", async () => {
+  await bootstrapRole();
+  router();
+});
