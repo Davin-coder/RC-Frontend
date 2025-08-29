@@ -1,10 +1,43 @@
 export const userStore = {
   get() {
-    try { return JSON.parse(localStorage.getItem("user") || "null"); }
-    catch { return null; }
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+      return null;
+    }
   },
-  set(user) { localStorage.setItem("user", JSON.stringify(user)); },
-  clear() { localStorage.removeItem("user"); },
-  role() { return this.get()?.role || null; },
-  name() { return this.get()?.name || this.get()?.email || "Usuario"; },
+
+  set(user) {
+    if (!user) {
+      localStorage.removeItem("user");
+      return;
+    }
+    // Normalizar para evitar problemas si backend cambia nombres
+    const normalized = {
+      ...user,
+      role: normalizeRole(user.role),
+    };
+    localStorage.setItem("user", JSON.stringify(normalized));
+  },
+
+  clear() {
+    localStorage.removeItem("user");
+  },
+
+  role() {
+    return this.get()?.role || null;
+  },
+
+  name() {
+    const u = this.get();
+    return u?.first_name || u?.name || u?.email || "Usuario";
+  },
 };
+
+function normalizeRole(raw) {
+  const r = String(raw || "").toLowerCase().trim();
+  if (["team_leader", "teamleader", "team-leader", "tl"].includes(r)) return "team_leader";
+  if (["admin", "administrator"].includes(r)) return "admin";
+  if (["coder", "student", "estudiante"].includes(r)) return "coder";
+  return r || "coder";
+}

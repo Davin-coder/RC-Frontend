@@ -1,18 +1,19 @@
 // src/pages/leaderboard.js
+import { LeaderboardAPI } from "../utils/api.js";
+import { userStore } from "../utils/userStore.js";
 
-function getCurrentRole() {
-  return localStorage.getItem("role") || "coder"; 
-}
-
+/* =========
+   Router entry
+   ========= */
 export default function Leaderboard() {
-  const role = getCurrentRole();
+  const role = (userStore.role() || "coder").toLowerCase();
   return (role === "team_leader" || role === "admin")
     ? TL_GestionEstudiantesView()
     : Student_LeaderboardView();
 }
 
 /* =========
-   Vista Estudiante: Leaderboard
+   Vista Estudiante: Leaderboard dinámico
    ========= */
 function Student_LeaderboardView() {
   return `
@@ -23,33 +24,25 @@ function Student_LeaderboardView() {
       <!-- Top 3 -->
       <div class="bg-white border rounded-xl p-6 shadow-sm">
         <h3 class="font-semibold mb-4">🏅 Top 3 Estudiantes</h3>
-        <div class="grid gap-6 md:grid-cols-3 items-end">
-          ${podium("Miguel Torres","MT","3100 XP","silver")}
-          ${podium("Sofia Chen","SC","3250 XP","gold", true)}
-          ${podium("Isabella García","IG","2980 XP","amber")}
+        <div id="podium" class="grid gap-6 md:grid-cols-3 items-end">
+          <p class="text-gray-500">Cargando…</p>
         </div>
       </div>
 
       <div class="grid gap-6 lg:grid-cols-3">
         <!-- Ranking individual -->
         <div class="bg-white border rounded-xl p-5 shadow-sm lg:col-span-2">
-          <h3 class="font-semibold mb-4">Ranking Individual</h3>
-          <div class="space-y-3">
-            ${rankRow(1,"Sofia Chen","Code Warriors","3250 XP","15 días")}
-            ${rankRow(2,"Miguel Torres","Dev Masters","3100 XP","12 días")}
-            ${rankRow(3,"Isabella García","Tech Titans","2980 XP","18 días")}
-            ${rankRow(4,"David Kim","Byte Ninjas","2890 XP","9 días")}
-            ${rankRow(5,"Alex Rodríguez","Los Debuggers","2450 XP","11 días")}
+          <h3 class="font-semibold mb-4">Ranking Individual (Top 5)</h3>
+          <div id="rank" class="space-y-3">
+            <p class="text-gray-500">Cargando…</p>
           </div>
         </div>
 
         <!-- Top Clanes -->
         <div class="bg-white border rounded-xl p-5 shadow-sm">
           <h3 class="font-semibold mb-4">Top Clanes</h3>
-          <div class="space-y-3">
-            ${clanRow(1,"Code Warriors","8 miembros","Líder: Sofía Chen","18500 XP")}
-            ${clanRow(2,"Dev Masters","7 miembros","Líder: Miguel Torres","16800 XP")}
-            ${clanRow(3,"Los Debuggers","5 miembros","Líder: Alex Rodríguez","9500 XP", true)}
+          <div id="clans" class="space-y-3">
+            <p class="text-gray-500">Cargando…</p>
           </div>
         </div>
       </div>
@@ -57,14 +50,82 @@ function Student_LeaderboardView() {
   `;
 }
 
+export async function initLeaderboardEvents() {
+  const podiumEl = document.getElementById("podium");
+  const rankEl   = document.getElementById("rank");
+  const clansEl  = document.getElementById("clans");
+  if (!podiumEl || !rankEl || !clansEl) return;
+
+  try {
+    const [coders, clans] = await Promise.all([
+      LeaderboardAPI.topCoders(5),
+      LeaderboardAPI.topClans(3),
+    ]);
+
+    // ---- Podium (Top 3 orden: 2°,1°,3°) ----
+    const top3 = (coders || []).slice(0, 3);
+    if (!top3.length) {
+      podiumEl.innerHTML = `<p class="text-gray-500">Sin datos</p>`;
+    } else {
+      // orden visual: 2º, 1º (crown), 3º
+      const [first, second, third] = [top3[0], top3[1], top3[2]];
+      const podiumData = [second, first, third].map((c, i) => ({
+        name: c?.name || "—",
+        initials: initials(c?.name || "?"),
+        xp: `${(c?.xp_total ?? 0)} XP`,
+        color: i === 1 ? "gold" : (i === 0 ? "silver" : "amber"),
+        crown: i === 1,
+      }));
+      podiumEl.innerHTML = podiumData.map(p =>
+        podium(p.name, p.initials, p.xp, p.color, p.crown)
+      ).join("");
+    }
+
+    // ---- Ranking (Top 5) ----
+    if (!coders?.length) {
+      rankEl.innerHTML = `<p class="text-gray-500">Sin datos</p>`;
+    } else {
+      rankEl.innerHTML = coders.slice(0, 5).map((c, idx) =>
+        rankRow(
+          idx + 1,
+          c?.name || "—",
+          c?.clan || "—",
+          `${c?.xp_total ?? 0} XP`,
+          `${c?.days_streak ?? 0} días`
+        )
+      ).join("");
+    }
+
+    // ---- Clanes ----
+    if (!clans?.length) {
+      clansEl.innerHTML = `<p class="text-gray-500">Sin datos</p>`;
+    } else {
+      clansEl.innerHTML = clans.slice(0, 3).map((cl, idx) =>
+        clanRow(
+          idx + 1,
+          cl?.name || cl?.group_name || "—",
+          `${cl?.members_count ?? 0} miembros`,
+          `Líder: ${cl?.leader || "—"}`,
+          `${cl?.xp_total ?? 0} XP`,
+          idx === 2 // ejemplo: resaltar el 3º como en tu mock
+        )
+      ).join("");
+    }
+  } catch (e) {
+    console.error("Leaderboard error:", e);
+    podiumEl.innerHTML = rankEl.innerHTML = clansEl.innerHTML =
+      `<p class="text-red-600">No se pudo cargar el leaderboard.</p>`;
+  }
+}
+
 /* =========
-   Vista Team Leader: Gestión de Estudiantes
+   Vista Team Leader: Gestión de Estudiantes (tu mock)
    ========= */
 function TL_GestionEstudiantesView() {
   const estudiantes = [
-    { nombre:"Ana Gómez", email:"ana@riwi.co", estado:"Activo", modulo:"Frontend", xp:1200 },
-    { nombre:"Luis Pérez", email:"luis@riwi.co", estado:"En riesgo", modulo:"Backend", xp:800 },
-    { nombre:"Sara Ruiz", email:"sara@riwi.co", estado:"Graduado", modulo:"Fullstack", xp:1500 },
+    { nombre:"Ana Gómez",  email:"ana@riwi.co",  estado:"Activo",   modulo:"Frontend",  xp:1200 },
+    { nombre:"Luis Pérez", email:"luis@riwi.co", estado:"En riesgo",modulo:"Backend",   xp:800  },
+    { nombre:"Sara Ruiz",  email:"sara@riwi.co", estado:"Graduado", modulo:"Fullstack", xp:1500 },
   ];
 
   return `
@@ -78,22 +139,10 @@ function TL_GestionEstudiantesView() {
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="bg-white border rounded-xl p-5 shadow-sm">
-          <p class="text-gray-500">Total Estudiantes</p>
-          <p class="text-2xl font-bold mt-2">124</p>
-        </div>
-        <div class="bg-white border rounded-xl p-5 shadow-sm">
-          <p class="text-gray-500">Activos</p>
-          <p class="text-2xl font-bold mt-2">118</p>
-        </div>
-        <div class="bg-white border rounded-xl p-5 shadow-sm">
-          <p class="text-gray-500">En Riesgo</p>
-          <p class="text-2xl font-bold mt-2 text-red-600">12</p>
-        </div>
-        <div class="bg-white border rounded-xl p-5 shadow-sm">
-          <p class="text-gray-500">Graduados</p>
-          <p class="text-2xl font-bold mt-2">89</p>
-        </div>
+        <div class="bg-white border rounded-xl p-5 shadow-sm"><p class="text-gray-500">Total Estudiantes</p><p class="text-2xl font-bold mt-2">124</p></div>
+        <div class="bg-white border rounded-xl p-5 shadow-sm"><p class="text-gray-500">Activos</p><p class="text-2xl font-bold mt-2">118</p></div>
+        <div class="bg-white border rounded-xl p-5 shadow-sm"><p class="text-gray-500">En Riesgo</p><p class="text-2xl font-bold mt-2 text-red-600">12</p></div>
+        <div class="bg-white border rounded-xl p-5 shadow-sm"><p class="text-gray-500">Graduados</p><p class="text-2xl font-bold mt-2">89</p></div>
       </div>
 
       <div class="rounded-xl border overflow-hidden bg-white">
@@ -132,7 +181,7 @@ function TL_GestionEstudiantesView() {
 }
 
 /* =========
-   Helpers para Leaderboard (estudiante)
+   Helpers (estudiante)
    ========= */
 function podium(name, initials, xp, color="gray", crown=false){
   const map = { gold:"bg-yellow-300", silver:"bg-gray-300", amber:"bg-amber-300", gray:"bg-gray-300" };
@@ -146,7 +195,6 @@ function podium(name, initials, xp, color="gray", crown=false){
     </div>
   `;
 }
-
 function rankRow(pos, name, clan, xp, days){
   return `
     <div class="flex items-center justify-between border rounded-lg p-3">
@@ -164,7 +212,6 @@ function rankRow(pos, name, clan, xp, days){
     </div>
   `;
 }
-
 function clanRow(pos, name, members, leader, xp, highlight=false){
   return `
     <div class="flex items-center justify-between border rounded-lg p-3 ${highlight ? "bg-purple-50 border-purple-200" : ""}">
@@ -179,3 +226,4 @@ function clanRow(pos, name, members, leader, xp, highlight=false){
     </div>
   `;
 }
+function initials(name) { return name.split(/\s+/).map(n => n[0]).join("").slice(0, 2).toUpperCase(); }

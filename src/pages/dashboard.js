@@ -5,11 +5,13 @@ import { ChallengesAPI } from "../utils/api.js";
 export function initDashboardEvents() {
   const container = document.getElementById("challenges-list");
   if (!container) return;
+
   container.innerHTML = `<div class="col-span-full text-sm text-gray-500">Cargando retos…</div>`;
+
   (async () => {
     try {
       const challenges = await ChallengesAPI.list(); // [{id_challenge, title, challenge_desc, difficulty}]
-      if (!challenges.length) {
+      if (!Array.isArray(challenges) || !challenges.length) {
         container.innerHTML = `<div class="col-span-full text-sm text-gray-500">No hay retos disponibles.</div>`;
         return;
       }
@@ -23,11 +25,12 @@ export function initDashboardEvents() {
 
 export default function Dashboard() {
   const role = userStore.role() || "coder";
+  const name = userStore.name();
 
   const header =
     role === "team_leader" || role === "admin"
       ? `<header class="mb-2"><h1 class="text-3xl font-bold">Panel de Administración</h1><p class="text-gray-500">Retos desde la base de datos</p></header>`
-      : `<div><h1 class="text-2xl md:text-3xl font-bold">¡Hola, ${userStore.name()}! 👋</h1><p class="text-gray-500">Estos son los retos disponibles</p></div>`;
+      : `<div><h1 class="text-2xl md:text-3xl font-bold">¡Hola, ${escapeHtml(name)}! 👋</h1><p class="text-gray-500">Estos son los retos disponibles</p></div>`;
 
   return `
     <section class="space-y-6">
@@ -50,11 +53,10 @@ function difficultyLabel(diff) {
   }
 }
 
-function challengeCard(ch) {
-  debugger
+function challengeCard(ch = {}) {
   const { text, cls } = difficultyLabel(ch.difficulty);
-  const title = escapeHtml(ch.title);
-  const desc = escapeHtml(ch.challenge_desc || "Sin descripción");
+  const title = escapeHtml(ch.title ?? "Sin título");
+  const desc = escapeHtml(ch.challenge_desc ?? "Sin descripción");
   return `
     <article class="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition">
       <div class="flex items-start justify-between">
