@@ -46,7 +46,7 @@ export default function Sidebar(active = "#/dashboard") {
       ${item("#/perfil",       "user",       titleByRole("Perfil","Analíticas"))}
       ${item("#/mentoria",  "trophy",     titleByRole("Mentoria","Gestión de Estudiantes"))}
       ${item("#/galeria",      "image",      titleByRole("Galería","Gestión de Galería"))}
-      ${item("#/HackathonList","rocket",     titleByRole("Hackathons","Gestión de Hackathons"))}
+      ${item("#/hackathon","rocket",     titleByRole("Hackathons","Gestión de Hackathons"))}
     </nav>
 
     <!-- User / Logout -->

@@ -1,55 +1,16 @@
-import { ChallengesAPI } from "../utils/api.js";     // <- usa tu wrapper fetch
-import { userStore } from "../utils/userStore.js";
+import { ChallengesAPI } from "../utils/api.js";
 
 /* =========
-   Vista principal
+   Estudiante: Controller
    ========= */
-export default function Retos() {
-  const role = userStore.role();
-  return (role === "team_leader" || role === "admin")
-    ? TL_RetosView()
-    : Student_RetosView();
-}
-
-/* =========
-   Estudiante: Mis Retos (desde backend)
-   ========= */
-function Student_RetosView() {
-  return `
-    <section class="space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl md:text-3xl font-bold">Mis Retos</h1>
-          <p class="text-gray-500">Explora y completa desafíos para mejorar tus habilidades</p>
-        </div>
-      </div>
-
-      <!-- Buscador -->
-      <div class="grid gap-4 md:grid-cols-2">
-        <div class="relative">
-          <input id="search-retos"
-                 class="w-full rounded-lg border border-gray-200 pl-10 pr-4 py-2 focus:ring-2 focus:ring-purple-500"
-                 placeholder="Buscar retos..."/>
-          <span class="absolute left-3 top-2.5 text-gray-400">🔎</span>
-        </div>
-      </div>
-
-      <!-- Grid de retos -->
-      <div id="retos-grid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        <p class="text-gray-500">Cargando retos...</p>
-      </div>
-    </section>
-  `;
-}
-
-export async function initRetosEvents() {
+export async function Student_RetosController() {
   const grid = document.getElementById("retos-grid");
   const search = document.getElementById("search-retos");
   if (!grid) return;
 
   let retos = [];
   try {
-    retos = await ChallengesAPI.list();   // <- ahora sí
+    retos = await ChallengesAPI.list();
   } catch (err) {
     console.error("Error cargando retos", err);
   }
@@ -64,7 +25,7 @@ export async function initRetosEvents() {
       desc: r.challenge_desc,
       badges: [r.difficulty ?? "—"],
       meta: "— · —",
-      stack: ["JS"],     // placeholder hasta que el backend lo soporte
+      stack: ["JS"], // placeholder
       xp: "— XP",
       rating: "—",
       cta: "Comenzar"
@@ -73,7 +34,7 @@ export async function initRetosEvents() {
 
   render(retos);
 
-  // filtro simple por título/descripcion/dificultad
+  // filtro
   const doFilter = () => {
     const q = (search?.value || "").toLowerCase().trim();
     if (!q) return render(retos);
@@ -85,7 +46,7 @@ export async function initRetosEvents() {
     render(filtered);
   };
 
-  // debounce suave
+  // debounce
   let t;
   search?.addEventListener("input", () => {
     clearTimeout(t);
@@ -94,38 +55,9 @@ export async function initRetosEvents() {
 }
 
 /* =========
-   Team Leader: Gestión de Retos (desde backend)
+   Team Leader: Controller
    ========= */
-function TL_RetosView() {
-  return `
-    <section class="space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl md:text-3xl font-bold">Gestión de Retos</h1>
-          <p class="text-gray-500">Crea, edita y administra los retos del bootcamp</p>
-        </div>
-        <button class="px-3 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700">+ Crear Reto</button>
-      </div>
-
-      <div class="rounded-xl border overflow-hidden bg-white">
-        <table class="w-full text-sm">
-          <thead class="bg-gray-50 text-gray-600">
-            <tr>
-              <th class="text-left px-4 py-2">Título</th>
-              <th class="text-left px-4 py-2">Descripción</th>
-              <th class="text-left px-4 py-2">Dificultad</th>
-            </tr>
-          </thead>
-          <tbody id="retos-tbody">
-            <tr><td class="px-4 py-2" colspan="3">Cargando retos...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  `;
-}
-
-export async function initTLRetosEvents() {
+export async function TL_RetosController() {
   const tbody = document.getElementById("retos-tbody");
   if (!tbody) return;
 
@@ -149,7 +81,7 @@ export async function initTLRetosEvents() {
 }
 
 /* =========
-   Helpers
+   Helpers UI
    ========= */
 function badge(text){
   return `<span class="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-700">${text}</span>`;

@@ -1,28 +1,28 @@
 // main.js
-import HomeView from "./src/pages/home.js";
-import ChallengesView from "./src/pages/challenges.js";
-import HackathonList from "./pages/HackathonList.js";
-import HackathonDetail from "./pages/HackathonDetail.js";
-import { AuthAPI } from "./src/utils/api.js"; // 👈 nuevo
 
+// 👇 ahora importas de routes (no de pages)
+import RetosRoute from "./src/routes/retosRoutes.js"; // antes ChallengesView -> ahora retos
+import hackathonRoute from "./src/routes/hackathonRoutes.js"; // combina list + detail
+
+import { AuthAPI } from "./src/utils/api.js"; // esto queda igual ✅
+
+// Definición de rutas
 const routes = {
-  "/": HomeView,
-  "/challenges": ChallengesView,
-  "/hackathon": HackathonList,
-  "/hackathon/:id": HackathonDetail,
+  "/challenges": RetosRoute,     // ahora se llama retos
+  "/hackathon": hackathonRoute,   // ruta principal
+  "/hackathon/:id": hackathonRoute, // misma función, pero con params
 };
 
-// 👇 NUEVO: bootstrap del rol desde el backend
+// 👇 bootstrap del rol desde el backend
 async function bootstrapRole() {
   try {
-    const me = await AuthAPI.me(); // backend debe responder { role: "team_leader" | "coder" | "admin", ... }
+    const me = await AuthAPI.me();
     if (me?.role) {
       localStorage.setItem("role", me.role);
     } else {
       localStorage.setItem("role", "coder");
     }
   } catch {
-    // Si no hay sesión, dejamos rol por defecto
     localStorage.setItem("role", "coder");
   }
 }
@@ -33,12 +33,12 @@ function router() {
 
   // --- Soporte para rutas dinámicas ---
   if (!view) {
-    const hackathonRegex = /^\/hackathon\/([^/]+)$/; // ej: /hackathon/riwi2024
+    const hackathonRegex = /^\/hackathon\/([^/]+)$/; 
     const match = path.match(hackathonRegex);
     if (match) {
       view = routes["/hackathon/:id"];
       const params = { id: match[1] };
-      document.getElementById("app").innerHTML = view(params);
+      document.getElementById("app").innerHTML = view(params); // 👈 ejecuta el route
     } else {
       document.getElementById("app").innerHTML = "<h1>404 - Página no encontrada</h1>";
     }
@@ -62,7 +62,7 @@ function router() {
 // Manejar la navegación con botones del navegador
 window.addEventListener("popstate", router);
 
-// 👇 NUEVO: primera carga con bootstrap de rol antes de renderizar
+// 👇 bootstrap de rol antes de renderizar
 window.addEventListener("DOMContentLoaded", async () => {
   await bootstrapRole();
   router();
