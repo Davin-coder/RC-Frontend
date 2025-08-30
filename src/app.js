@@ -1,13 +1,12 @@
-// src/app.js
-
-import loginRoute from "./routes/loginRoutes.js";
-import dashboardRoute from "./routes/dashboardRoutes.js";
-import RetosRoute from "./routes/retosRoutes.js";
-import clanRoute from "./routes/clanRoutes.js";
-import perfilRoute from "./routes/perfilRoutes.js";
-import mentoringRoute from "./routes/mentoriaRoutes.js";
-import GaleriaRoute from "./routes/galeriaRoutes.js";
-import hackathonRoute from "./routes/hackathonRoutes.js";
+// src/main.js
+import LoginView, { initLoginEvents } from "./pages/login.js";
+import Dashboard, { initDashboardEvents } from "./pages/dashboard.js";
+import Retos, { initRetosEvents, initTLRetosEvents } from "./pages/retos.js";
+import Clan, { initClanEvents } from "./pages/clan.js";
+import Perfil, { initPerfilEvents } from "./pages/perfil.js";
+import Mentoria, { Coder_GestionMentoringController, TeamLeader_GestionMentoringController }  from "./pages/mentoria.js";
+import Galeria, { initGaleriaEvents } from "./pages/galeria.js";
+import HackathonList, { initHackathonListEvents } from "./pages/hackatonList.js";
 
 import Sidebar, { initSidebarEvents } from "./components/sidebar.js";
 import { userStore } from "./utils/userStore.js";
