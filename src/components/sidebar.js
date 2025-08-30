@@ -41,12 +41,12 @@ export default function Sidebar(active = "#/dashboard") {
       ${item("#/dashboard", "home", titleByRole("Dashboard","Dashboard"))}
 
       <div class="text-[11px] font-semibold tracking-wide text-slate-400 px-3 mt-3 mb-1">Work</div>
-      ${item("#/retos",        "file-text",  titleByRole("Mis Retos","Gestión de Retos"))}
-      ${item("#/clan",         "users",      titleByRole("Mi Clan","Gestión de Clanes"))}
-      ${item("#/perfil",       "user",       titleByRole("Perfil","Analíticas"))}
-      ${item("#/mentoria",  "trophy",     titleByRole("Mentoria","Gestión de Estudiantes"))}
-      ${item("#/galeria",      "image",      titleByRole("Galería","Gestión de Galería"))}
-      ${item("#/hackathon","rocket",     titleByRole("Hackathons","Gestión de Hackathons"))}
+      ${item("#/retos",        "file-text",  titleByRole("Challenges","Challenge Management"))}
+      ${item("#/clan",         "users",      titleByRole("Groups","Groups Management"))}
+      ${item("#/perfil",       "user",       titleByRole("Profile","Analytics"))}
+      ${item("#/mentoria",  "trophy",     titleByRole("Mentoring","Coders Management"))}
+      ${item("#/galeria",      "image",      titleByRole("Galery","Galery Management"))}
+      ${item("#/hackathon","rocket",     titleByRole("Hackathons","Hackathons Management"))}
     </nav>
 
     <!-- User / Logout -->
@@ -63,7 +63,7 @@ export default function Sidebar(active = "#/dashboard") {
                 class="ml-auto px-3 py-1.5 text-xs rounded-lg border border-red-500 text-red-600 
                        hover:bg-red-50 hover:text-red-700 hover:border-red-600 transition inline-flex items-center gap-2">
           <i data-lucide="log-out" class="h-4 w-4"></i>
-          Cerrar sesión
+          Logout
         </button>
       </div>
     </div>
@@ -113,14 +113,14 @@ export function initSidebarEvents() {
     document.querySelectorAll("#sidebar-logout").forEach(btn => {
       btn.onclick = async () => {
         const result = await Swal.fire({
-          title: "¿Cerrar sesión?",
-          text: "Tu sesión actual se cerrará",
+          title: "Logout?",
+          text: "You are about to be logged out.",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#d33",
           cancelButtonColor: "#6b7280",
-          confirmButtonText: "Sí, salir",
-          cancelButtonText: "Cancelar"
+          confirmButtonText: "Accept",
+          cancelButtonText: "Cancel"
         });
 
         if (!result.isConfirmed) return;

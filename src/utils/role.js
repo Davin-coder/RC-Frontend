@@ -8,11 +8,10 @@ function normalizeRole(raw) {
 }
 
 export function getCurrentRole() {
-  // permite override temporal por query ?role=team_leader (útil para pruebas)
-  const qs = new URLSearchParams(window.location.search);
-  const qRole = qs.get("role");
-  const stored = localStorage.getItem("role");
-  return normalizeRole(qRole || stored || "coder");
+  const userData = localStorage.getItem("user"),
+    user = JSON.parse(userData),
+    userRole = user.role;
+  return normalizeRole( userRole || "coder");
 }
 
 export function isTL() {

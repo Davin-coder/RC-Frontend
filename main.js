@@ -40,7 +40,7 @@ function router() {
       const params = { id: match[1] };
       document.getElementById("app").innerHTML = view(params); // 👈 ejecuta el route
     } else {
-      document.getElementById("app").innerHTML = "<h1>404 - Página no encontrada</h1>";
+      document.getElementById("app").innerHTML = "<h1>404 - Page Not Found</h1>";
     }
     return;
   }

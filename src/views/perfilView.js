@@ -13,22 +13,21 @@ export function Student_ProfileView() {
 
   return `
     <section class="space-y-6">
-      <h1 class="text-2xl md:text-3xl font-bold">Mi Perfil</h1>
-      <p class="text-gray-500">Gestiona tu información personal y progreso</p>
+      <h1 class="text-2xl md:text-3xl font-bold">Profile</h1>
+      <p class="text-gray-500">Manage your personal info and progress</p>
 
       <div class="grid gap-6 lg:grid-cols-3">
-        <!-- Resumen -->
         <div class="bg-white border rounded-xl p-5 shadow-sm">
           <div class="flex flex-col items-center text-center">
             <div class="h-20 w-20 rounded-full bg-purple-100 text-purple-700 grid place-content-center text-2xl font-bold">
               ${initialsText}
             </div>
-            <h3 class="mt-3 text-lg font-semibold">${u.first_name || u.name || u.email || "Usuario"}</h3>
+            <h3 class="mt-3 text-lg font-semibold">${u.first_name || u.name || u.email || "User"}</h3>
 
             <div class="flex flex-wrap gap-2 mt-2">
               ${rolesFromStore.length
                 ? rolesFromStore.map(r => roleBadge(r)).join("")
-                : `<span class="text-xs text-gray-500">Sin rol</span>`}
+                : `<span class="text-xs text-gray-500">Without role</span>`}
             </div>
           </div>
 
@@ -38,21 +37,21 @@ export function Student_ProfileView() {
           </div>
         </div>
 
-        <!-- Formulario -->
+        <!-- Form -->
         <div class="bg-white border rounded-xl p-5 shadow-sm lg:col-span-2">
           <h3 class="font-semibold mb-4">Editar Perfil</h3>
           <form id="profile-form" class="grid gap-4 md:grid-cols-2">
-            ${input("Nombre", u.first_name || u.name || "", "first_name")}
-            ${input("Apellido", u.last_name || "", "last_name")}
+            ${input("Complete Name", u.first_name || u.name || "", "first_name")}
+            ${input("Last Name", u.last_name || "", "last_name")}
             ${input("Email", u.email || "", "email", "email")}
             <div class="md:col-span-2">
-              <label class="text-sm text-gray-600">Biografía</label>
+              <label class="text-sm text-gray-600">Bio</label>
               <textarea name="bio" class="w-full mt-1 rounded-lg border border-gray-200 p-2 focus:ring-2 focus:ring-purple-500" rows="4">${
                 u.bio || ""
               }</textarea>
             </div>
             <div class="md:col-span-2 flex items-center gap-3">
-              <button type="submit" class="px-5 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700">Guardar Cambios</button>
+              <button type="submit" class="px-5 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700">Save changes</button>
               <span id="profile-msg" class="text-sm text-gray-500"></span>
             </div>
           </form>
@@ -62,13 +61,13 @@ export function Student_ProfileView() {
       <!-- Skills -->
       <div class="bg-white border rounded-xl p-5 shadow-sm">
         <div class="flex items-center justify-between">
-          <h3 class="font-semibold">Habilidades</h3>
-          <button id="btn-add-skill" class="px-3 py-1.5 rounded-lg border text-sm">Añadir skill</button>
+          <h3 class="font-semibold">Skills</h3>
+          <button id="btn-add-skill" class="px-3 py-1.5 rounded-lg border text-sm">Add skill</button>
         </div>
         <div id="skills-list" class="mt-4">
           ${skillsFromStore.length
             ? skillsFromStore.map(s => skillRow(s.name, s.level)).join("")
-            : `<p class="text-gray-500 text-sm">Aún no tienes habilidades registradas.</p>`}
+            : `<p class="text-gray-500 text-sm">You don't have any skills registered yet.</p>`}
         </div>
       </div>
     </section>
@@ -77,14 +76,14 @@ export function Student_ProfileView() {
     <div id="skill-modal" class="hidden fixed inset-0 z-50">
       <div class="absolute inset-0 bg-black/40"></div>
       <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                  w-[95%] max-w-md bg-white border rounded-2xl p-5">
+      w-[95%] max-w-md bg-white border rounded-2xl p-5">
         <div class="flex items-center justify-between">
           <h3 id="skill-modal-title" class="text-lg font-semibold">Skill</h3>
           <button id="skill-modal-close" class="h-9 w-9 grid place-content-center rounded-lg hover:bg-gray-100">✕</button>
         </div>
         <div class="mt-3 space-y-3">
           <div>
-            <label class="text-sm text-gray-600">Nombre</label>
+            <label class="text-sm text-gray-600">Skill name</label>
             <input id="skill-name" class="w-full border rounded-lg px-3 py-2" />
           </div>
           <div>
@@ -93,8 +92,8 @@ export function Student_ProfileView() {
           </div>
         </div>
         <div class="mt-5 flex justify-end gap-2">
-          <button id="skill-cancel" class="px-3 py-2 rounded-lg border">Cancelar</button>
-          <button id="skill-save" class="px-3 py-2 rounded-lg bg-purple-600 text-white">Guardar</button>
+          <button id="skill-cancel" class="px-3 py-2 rounded-lg border">Cancel</button>
+          <button id="skill-save" class="px-3 py-2 rounded-lg bg-purple-600 text-white">Save</button>
         </div>
       </div>
     </div>
@@ -107,17 +106,17 @@ export function Student_ProfileView() {
 export function TL_AnalyticsView() {
   return `
     <section class="space-y-6">
-      <h1 class="text-2xl md:text-3xl font-bold">Analíticas</h1>
+      <h1 class="text-2xl md:text-3xl font-bold">Analytics</h1>
       <p class="text-gray-500">Monitorea el rendimiento general de estudiantes y clanes</p>
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        ${statCard("Estudiantes Activos","124","+12% desde el mes pasado")}
-        ${statCard("Retos Completados","1,847","+23% desde el mes pasado")}
-        ${statCard("Insignias Otorgadas","342","+8% desde el mes pasado")}
+        ${statCard("Coders online","124","+12% desde el mes pasado")}
+        ${statCard("Challenges completed","1,847","+23% desde el mes pasado")}
+        ${statCard("Assigned badges","342","+8% desde el mes pasado")}
         ${statCard("Tasa de Finalización","87%","+5% este mes")}
       </div>
       <div class="grid gap-6 lg:grid-cols-2">
-        <div class="bg-white border rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-4">Retos por Módulo</h3><div class="h-48 grid place-content-center text-gray-400">📊</div></div>
-        <div class="bg-white border rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-4">Actividad Semanal</h3><div class="h-48 grid place-content-center text-gray-400">📈</div></div>
+        <div class="bg-white border rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-4">Challenges per module</h3><div class="h-48 grid place-content-center text-gray-400">📊</div></div>
+        <div class="bg-white border rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-4">Weekly Activity</h3><div class="h-48 grid place-content-center text-gray-400">📈</div></div>
       </div>
     </section>
   `;

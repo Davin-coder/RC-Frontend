@@ -5,35 +5,35 @@ export async function initDashboardController() {
   const container = document.getElementById("challenges-list");
   if (!container) return;
 
-  container.innerHTML = `<div class="col-span-full text-sm text-gray-500">Cargando retos…</div>`;
+  container.innerHTML = `<div class="col-span-full text-sm text-gray-500">Loading challenges…</div>`;
 
   try {
     const challenges = await ChallengesAPI.list(); 
     if (!Array.isArray(challenges) || !challenges.length) {
-      container.innerHTML = `<div class="col-span-full text-sm text-gray-500">No hay retos disponibles.</div>`;
+      container.innerHTML = `<div class="col-span-full text-sm text-gray-500">There are no challenges available.</div>`;
       return;
     }
     container.innerHTML = challenges.map(challengeCard).join("");
   } catch (err) {
-    console.error("Error cargando retos:", err);
-    container.innerHTML = `<div class="col-span-full text-sm text-red-600">No se pudieron cargar los retos.</div>`;
+    console.error("Error loading challenges:", err);
+    container.innerHTML = `<div class="col-span-full text-sm text-red-600">Unable to load challenges.</div>`;
   }
 }
 
 /* ===== Helpers UI ===== */
 function difficultyLabel(diff) {
   switch ((diff || "").toLowerCase()) {
-    case "beginner": return { text: "Básico",   cls: "bg-green-100 text-green-700" };
-    case "intermediate": return { text: "Intermedio", cls: "bg-yellow-100 text-yellow-700" };
-    case "advanced": return { text: "Avanzado", cls: "bg-orange-100 text-orange-700" };
-    default: return { text: "Sin nivel", cls: "bg-gray-100 text-gray-700" };
+    case "beginner": return { text: "Begginer",   cls: "bg-green-100 text-green-700" };
+    case "intermediate": return { text: "Intermediate", cls: "bg-yellow-100 text-yellow-700" };
+    case "advanced": return { text: "Advanced", cls: "bg-orange-100 text-orange-700" };
+    default: return { text: "Without level", cls: "bg-gray-100 text-gray-700" };
   }
 }
 
 function challengeCard(ch = {}) {
   const { text, cls } = difficultyLabel(ch.difficulty);
-  const title = escapeHtml(ch.title ?? "Sin título");
-  const desc = escapeHtml(ch.challenge_desc ?? "Sin descripción");
+  const title = escapeHtml(ch.title ?? "Without title");
+  const desc = escapeHtml(ch.challenge_desc ?? "Without description");
   return `
     <article class="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition">
       <div class="flex items-start justify-between">

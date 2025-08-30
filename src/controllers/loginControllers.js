@@ -23,18 +23,12 @@ export function initLoginEvents() {
 
     try {
       const data = await AuthAPI.login(email, password_user);
-      console.log("[login] respuesta API =", data);
-
       if (!data?.ok || !data?.user) {
         setMsg(data?.msg || "Credenciales inválidas", "text-red-600");
         btn.disabled = false;
         return;
       }
-
-      // Guardar en userStore
       userStore.set(data.user);
-      console.log("[login] user guardado =", userStore.get());
-
       setMsg("Bienvenido 👋", "text-green-600");
 
       // Redirección segura

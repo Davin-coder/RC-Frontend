@@ -8,11 +8,11 @@ export function DashboardView() {
   const header =
     role === "team_leader" || role === "admin"
       ? `<header class="mb-2">
-          <h1 class="text-3xl font-bold">Panel de Administración</h1>
+          <h1 class="text-3xl font-bold">Administration panel</h1>
           <p class="text-gray-500">Retos desde la base de datos</p>
         </header>`
       : `<div>
-          <h1 class="text-2xl md:text-3xl font-bold">¡Hola, ${escapeHtml(name)}! 👋</h1>
+          <h1 class="text-2xl md:text-3xl font-bold">¡Hello, ${escapeHtml(name)}! 👋</h1>
           <p class="text-gray-500">Estos son los retos disponibles</p>
         </div>`;
 
