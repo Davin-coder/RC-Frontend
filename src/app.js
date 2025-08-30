@@ -1,22 +1,22 @@
-// src/main.js
-import LoginView, { initLoginEvents } from "./pages/login.js";
-import Dashboard, { initDashboardEvents } from "./pages/dashboard.js";
-import Retos, { initRetosEvents, initTLRetosEvents } from "./pages/retos.js";
-import Clan, { initClanEvents } from "./pages/clan.js";
-import Perfil, { initPerfilEvents } from "./pages/perfil.js";
-import Mentoria, { Coder_GestionMentoringController, TeamLeader_GestionMentoringController }  from "./pages/mentoria.js";
-import Galeria, { initGaleriaEvents } from "./pages/galeria.js";
-import HackathonList, { initHackathonListEvents } from "./pages/hackatonList.js";
+// src/app.js
+
+import loginRoute from "./routes/loginRoutes.js";
+import dashboardRoute from "./routes/dashboardRoutes.js";
+import RetosRoute from "./routes/retosRoutes.js";
+import clanRoute from "./routes/clanRoutes.js";
+import perfilRoute from "./routes/perfilRoutes.js";
+import mentoringRoute from "./routes/mentoriaRoutes.js";
+import GaleriaRoute from "./routes/galeriaRoutes.js";
+import hackathonRoute from "./routes/hackathonRoutes.js";
 
 import Sidebar, { initSidebarEvents } from "./components/sidebar.js";
 import { userStore } from "./utils/userStore.js";
 
-// 🔁 Navegación que SIEMPRE asegura un render
 function navigate(hash) {
   if (window.location.hash !== hash) {
-    window.location.hash = hash; // dispara hashchange
+    window.location.hash = hash; 
   } else {
-    window.dispatchEvent(new HashChangeEvent("hashchange")); // fuerza render
+    window.dispatchEvent(new HashChangeEvent("hashchange")); 
   }
 }
 
@@ -30,12 +30,12 @@ function renderLayout(activeHash, innerHtml) {
       </main>
     </div>
   `;
-  initSidebarEvents?.(); // inicializa eventos del menú lateral
+  initSidebarEvents?.(); 
 }
 
 const routes = {
   "#/login": () => {
-    loginRoute(); // login se maneja solito (sin sidebar)
+    loginRoute(); 
   },
   "#/dashboard": () => {
     renderLayout("#/dashboard", dashboardRoute());
@@ -82,7 +82,7 @@ function render() {
     return;
   }
 
-  // 👇 manejar hackathon con hash dinámico
+  //  manejar hackathon con hash dinámico
   if (hash.startsWith("#/hackathon")) {
     routes["#/hackathon"](hash);
     return;
