@@ -1,5 +1,7 @@
 import { hackathons, calcularDiasRestantes } from "../../../controllers/hackathonControllers/hackathonControllers.js";
+
 export function HackathonDetail(params) {
+  console.log("Params en HackathonDetail view:", params);
   const hackathon = hackathons.find(h => h.id === params.id);
   if (!hackathon) return `<p>No se encontró el hackathon</p>`;
   const diasRestantes = calcularDiasRestantes(hackathon.fechaInicio);
