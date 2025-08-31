@@ -148,7 +148,32 @@ export const UsersAPI = {
 // --- MENTORIA ---
 
 export const MentoringAPI = {
-  
+  async getAllSessions() {
+    const res = await fetch("/events");
+    return res.json();
+  },
+
+  async createSession(session) {
+    const res = await fetch("/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(session),
+    });
+    return res.json();
+  },
+
+  async deleteSession(id) {
+    await fetch(`/events/${id}`, { method: "DELETE" });
+  },
+
+  async updateSession(id, data) {
+    const res = await fetch(`/events/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
 }
 
 
