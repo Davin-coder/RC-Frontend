@@ -48,7 +48,40 @@ export const ChallengesAPI = {
     const res = await fetch(`${BASE_URL}/challenges`, { credentials: "include" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
-    return data.challenge || []; // <- tu backend envuelve así
+    return data.challenge || [];
+  },
+
+  async create(payload) {
+    const res = await fetch(`${BASE_URL}/challenges`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
+    return data.challenge;
+  },
+
+  async update(id, payload) {
+    const res = await fetch(`${BASE_URL}/challenges/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
+    return data.challenge;
+  },
+
+  async delete(id) {
+    const res = await fetch(`${BASE_URL}/challenges/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return true;
   },
 };
 
