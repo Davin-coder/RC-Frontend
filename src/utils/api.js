@@ -149,12 +149,13 @@ export const UsersAPI = {
 
 export const MentoringAPI = {
   async getAllSessions() {
-    const res = await fetch("/events");
-    return res.json();
+    const res = await fetch(`${BASE_URL}/events`);
+    const data = await res.json();
+    return data.events ?? data; 
   },
 
   async createSession(session) {
-    const res = await fetch("/events", {
+    const res = await fetch(`${BASE_URL}/events`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(session),
@@ -163,11 +164,11 @@ export const MentoringAPI = {
   },
 
   async deleteSession(id) {
-    await fetch(`/events/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/events/${id}`, { method: "DELETE" });
   },
 
   async updateSession(id, data) {
-    const res = await fetch(`/events/${id}`, {
+    const res = await fetch(`${BASE_URL}/events/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
