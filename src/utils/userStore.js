@@ -1,7 +1,6 @@
   export const userStore = {
     get() {
       try {
-        console.log (JSON.parse(localStorage.getItem("user") || "null"));
         return JSON.parse(localStorage.getItem("user") || "null");
       } catch {
         return null;

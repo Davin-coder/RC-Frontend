@@ -1,13 +1,14 @@
 // src/app.js
 
 import loginRoute from "./routes/loginRoutes.js";
-import dashboardRoute from "./routes/dashboardRoutes.js";
-import RetosRoute from "./routes/retosRoutes.js";
-import clanRoute from "./routes/clanRoutes.js";
+import dashboardRoute from "./routes/dashboardRoutes/dashboardRoutes.js";
+import RetosRoute from "./routes/retosRoutes/retosRoutes.js";
+//GRUPOS
+import clanRoute from "./routes/clanRoutes/clanRoutes.js";
 import perfilRoute from "./routes/perfilRoutes.js";
-import mentoringRoute from "./routes/mentoriaRoutes.js";
-import GaleriaRoute from "./routes/galeriaRoutes.js";
-import hackathonRoute from "./routes/hackathonRoutes.js";
+import mentoringRoute from "./routes/mentoriaRoutes/mentoria.js";
+import vitrinaRoutes from "./routes/vitrinaRoutes/vitrinaRoutes.js";
+import hackathonRoute from "./routes/hackathonRoutes/hackathonRoutes.js";
 
 import Sidebar, { initSidebarEvents } from "./components/sidebar.js";
 import { userStore } from "./utils/userStore.js";
@@ -53,7 +54,7 @@ const routes = {
     renderLayout("#/mentoria", mentoringRoute());
   },
   "#/galeria": () => {
-    renderLayout("#/galeria", GaleriaRoute());
+    renderLayout("#/galeria", vitrinaRoutes());
   },
   "#/hackathon": (hash = "#/hackathon") => {
     renderLayout("#/hackathon", hackathonRoute(hash));
