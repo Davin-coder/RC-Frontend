@@ -1,9 +1,7 @@
 // src/views/profileView.js
 import { userStore } from "../utils/userStore.js";
 
-/* ==========================
-   Vista Estudiante
-   ========================== */
+
 export function Student_ProfileView() {
   const u = userStore.get() || {};
   const initialsText = initials(u.first_name || u.name || u.email || u.id_clan || "U");

@@ -1,8 +1,26 @@
+import { TeamLeader_HackathonView } from "../../../views/hackathonView/teamLeader/TeamLeader_HackathonView.js";
 import { hackathons } from "../hackathonControllers.js";
-export async function TeamLeader_HackathonController() {
-    setupAdminEvents();
+
+export function TeamLeader_HackathonController(hash) {
+  console.log("Hello from HACKATHON TL CONTROLLER");
+
+  // Vista principal
+  if (hash === "#/hackathon") {
+    const view = TeamLeader_HackathonView();
+
+    // Enganchar eventos después de renderizar la vista
+    requestAnimationFrame(() => {
+      setupAdminEvents();
+    });
+
+    return view;
+  }
+
+  // Si algún día quieres manejar un detalle para TL, se pondría aquí.
+  return `<p class="p-6">Vista no encontrada</p>`;
 }
 
+/* ==================== EVENTOS ==================== */
 export function setupAdminEvents() {
   const btnCrear = document.getElementById("btnCrearHackathon");
   const modal = document.getElementById("modalCrearHackathon");
