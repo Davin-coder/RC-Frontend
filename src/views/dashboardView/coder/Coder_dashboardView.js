@@ -16,21 +16,21 @@ export function Coder_dashboardView() {
 
   return `
     <section class="space-y-6">
-      <!-- Saludo -->
+      <!-- Greeting -->
       <header class="bg-white border rounded-xl p-5 shadow-sm">
         <h1 class="text-2xl md:text-3xl font-bold">
-          Hola, <span id="dash-user-name" class="text-purple-700">${safeName}</span> 👋
+          Hello, <span id="dash-user-name" class="text-purple-700">${safeName}</span> 👋
         </h1>
-        <p class="text-gray-600 mt-1">Bienvenido/a a tu panel.</p>
+        <p class="text-gray-600 mt-1">Welcome to your dashboard.</p>
       </header>
 
-      <!-- Frase costeña al azar -->
+      <!-- Random Caribbean phrase -->
       <article class="bg-white border rounded-xl p-5 shadow-sm">
         <div class="flex items-start justify-between">
-          <h2 class="text-lg md:text-xl font-semibold">Frase del Caribe colombiano</h2>
+          <h2 class="text-lg md:text-xl font-semibold">Caribbean Inspirational Quote</h2>
           <button id="refresh-quote"
                   class="px-3 py-1.5 rounded-lg bg-purple-600 text-white text-sm hover:bg-purple-700">
-            Otra frase
+            Another quote
           </button>
         </div>
         <blockquote id="costa-quote"
