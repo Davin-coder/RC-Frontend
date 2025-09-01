@@ -1,9 +1,9 @@
 
 import { userStore } from "../../utils/userStore.js";
 import { Coder_VitrinaView } from "../../views/vitrinaView/coder/Coder_VitrinaView.js";
-import { Coder_VitrinaController } from "../../controllers/VitrinaController/coder/Coder_VitrinaController.js";
-import { TeamLeader_VitrinaView } from "../../views/VitrinaView/teamLeader/TeamLeader_VitrinaView.js"
-import { TeamLeader_VitrinaController } from "../../controllers/VitrinaController/teamLeader/TeamLeader_VitrinaController.js";
+import { Coder_VitrinaController } from "../../controllers/vitrinaController/coder/Coder_VitrinaController.js";
+import { TeamLeader_VitrinaView } from "../../views/vitrinaView/teamLeader/TeamLeader_VitrinaView.js"
+import { TeamLeader_VitrinaController } from "../../controllers/vitrinaController/teamLeader/TeamLeader_VitrinaController.js";
 /* =========
    Router entry
    ========= */
