@@ -1,8 +1,15 @@
 import { Coder_HackthonDetailController } from "../coder/Coder_HackathonDetail.js";
-///THIS FUNCION BELLOW WILL BE CALLING THE DETAIL VIEW AND OTHER ONES
-export async function Coder_HackathonController(hash) {
-    
-    console.log("Hello from HACKATHON CODER CONTROLLER")
-    Coder_HackthonDetailController(hash);
-}
+import { Coder_HackathonView } from "../../../views/hackathonView/coder/Coder_HackathonView.js";
 
+export function Coder_HackathonController(hash) {
+  console.log("Hello from HACKATHON CODER CONTROLLER");
+
+  if (hash === "#/hackathon") {
+    return Coder_HackathonView();
+  }
+
+  const detailView = Coder_HackthonDetailController(hash);
+  if (detailView) return detailView;
+
+  return `<p class="p-6">Vista no encontrada</p>`;
+}
