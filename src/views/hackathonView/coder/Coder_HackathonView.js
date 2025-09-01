@@ -3,18 +3,18 @@ import { hackathons } from "../../../controllers/hackathonControllers/hackathonC
 export function Coder_HackathonView() {
   return `
     <div class="p-6 space-y-6">
-      <h1 class="text-2xl font-bold">Hackathons Disponibles</h1>
+      <h1 class="text-2xl font-bold">Available Hackathons</h1>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         ${hackathons.map(h => {
           let estadoBadge = '';
           if (h.estado === 'activo') {
-            estadoBadge = `<span class="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded absolute top-3 right-3">Activo</span>`;
+            estadoBadge = `<span class="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded absolute top-3 right-3">Active</span>`;
           } else if (h.estado.startsWith('en-')) {
             const dias = h.estado.split('-')[1];
-            estadoBadge = `<span class="bg-orange-100 text-orange-800 text-xs px-2.5 py-0.5 rounded absolute top-3 right-3">En ${dias} días</span>`;
+            estadoBadge = `<span class="bg-orange-100 text-orange-800 text-xs px-2.5 py-0.5 rounded absolute top-3 right-3">In ${dias} days</span>`;
           } else {
-            estadoBadge = `<span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded absolute top-3 right-3">Próximamente</span>`;
+            estadoBadge = `<span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded absolute top-3 right-3">Coming soon</span>`;
           }
 
           return `
@@ -29,7 +29,7 @@ export function Coder_HackathonView() {
               <p class="font-bold text-purple-700 mt-2">${h.premio}</p>
               <button onclick="window.location.hash = '#/hackathon/${h.id}'"
                 class="mt-4 w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
-                Saber más
+                Learn more
               </button>
             </div>
           `;
