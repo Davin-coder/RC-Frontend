@@ -11,7 +11,7 @@ export function initPerfilEvents() {
   // Guardar perfil
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    msg.textContent = "Guardando…";
+    msg.textContent = "Saving changes...";
     msg.className = "text-sm text-gray-500";
 
     const u = userStore.get() || {};
@@ -31,7 +31,7 @@ export function initPerfilEvents() {
     } catch {}
 
     userStore.set({ ...u, ...payload, name: payload.first_name || u.name });
-    msg.textContent = "Cambios guardados";
+    msg.textContent = "Changes saved.";
     msg.className = "text-sm text-green-600";
     setTimeout(() => {
       history.replaceState(null, "", "#/perfil");

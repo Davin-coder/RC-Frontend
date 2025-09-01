@@ -74,5 +74,6 @@ export const caribbeanPhrases = [
   "Don’t be afraid to start over, it’s a chance to build something better.",
   "Your potential is endless.",
   "Make today count, you’ll never get it back.",
-  "Stay hungry, stay foolish."
+  "Stay hungry, stay foolish.",
+  "Are you a homozygous recessive?"
 ];

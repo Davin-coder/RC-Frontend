@@ -13,7 +13,6 @@ function escapeHTML(str = "") {
 export function Coder_dashboardView() {
   const userName = userStore.name();
   const safeName = escapeHTML(userName);
-
   return `
     <section class="space-y-6">
       <!-- Greeting -->
@@ -24,7 +23,7 @@ export function Coder_dashboardView() {
         <p class="text-gray-600 mt-1">Welcome to your dashboard.</p>
       </header>
 
-      <!-- Random Caribbean phrase -->
+      <!-- Frase costeña al azar -->
       <article class="bg-white border rounded-xl p-5 shadow-sm">
         <div class="flex items-start justify-between">
           <h2 class="text-lg md:text-xl font-semibold">Caribbean Inspirational Quote</h2>

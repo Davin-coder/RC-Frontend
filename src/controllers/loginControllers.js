@@ -14,7 +14,7 @@ export function initLoginEvents() {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    setMsg("Verificando...", "text-gray-500");
+    setMsg("Verifying", "text-gray-500");
 
     const email = form.email.value.trim();
     const password_user = form.password_user.value;
@@ -24,12 +24,12 @@ export function initLoginEvents() {
     try {
       const data = await AuthAPI.login(email, password_user);
       if (!data?.ok || !data?.user) {
-        setMsg(data?.msg || "Credenciales inválidas", "text-red-600");
+        setMsg(data?.msg || "Invalids Credentials", "text-red-600");
         btn.disabled = false;
         return;
       }
       userStore.set(data.user);
-      setMsg("Bienvenido 👋", "text-green-600");
+      setMsg("Welcome 👋", "text-green-600");
 
       // Redirección segura
       if (window.location.hash !== "#/dashboard") {
