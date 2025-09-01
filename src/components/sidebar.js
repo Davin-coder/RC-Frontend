@@ -42,8 +42,8 @@ export default function Sidebar(active = "#/dashboard") {
       ${item("#/retos",        "file-text",  titleByRole("Challenges","Challenge Management"))}
       ${item("#/clan",         "users",      titleByRole("Groups","Groups Management"))}
       ${item("#/perfil",       "user",       titleByRole("Profile","Analytics"))}
-      ${item("#/mentoria",  "trophy",     titleByRole("Mentoring","Coders Management"))}
-      ${item("#/galeria",      "image",      titleByRole("Galery","Galery Management"))}
+      ${item("#/mentoria",  "trophy",     titleByRole("Mentoring","Mentorings"))}
+      ${item("#/galeria",      "image",      titleByRole("Galery","Projects"))}
       ${item("#/hackathon","rocket",     titleByRole("Hackathons","Hackathons Management"))}
     </nav>
 

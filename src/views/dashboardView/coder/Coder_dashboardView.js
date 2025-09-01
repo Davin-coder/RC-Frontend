@@ -1,3 +1,5 @@
+import { userStore } from "../../../utils/userStore";
+
 // src/views/dashboardView/coder/Coder_dashboardView.js
 function escapeHTML(str = "") {
   return String(str)
@@ -8,7 +10,8 @@ function escapeHTML(str = "") {
     .replaceAll("'", "&#039;");
 }
 
-export function Coder_dashboardView(userName = "Usuario") {
+export function Coder_dashboardView() {
+  const userName = userStore.name();
   const safeName = escapeHTML(userName);
 
   return `
