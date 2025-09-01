@@ -11,9 +11,12 @@ export async function Coder_ClanController() {
   const searchEl = document.getElementById("groups-search");
   const exploreWrap = document.getElementById("explore-wrap");
 
-  const currentUser = userStore.get?.("user") ?? userStore.get?.() ?? null;
+  // userStore.get() suele no recibir args; mantenemos compatibilidad por si tuvieras una variante
+  const currentUser =
+    (userStore?.get?.("user") ?? userStore?.get?.() ?? null) || null;
   const role = String(currentUser?.role || "").toLowerCase();
 
+  // visible solo para 'coder'
   if (role !== "coder") {
     if (myCard) {
       myCard.innerHTML = `<div class="text-sm text-gray-500">Sección solo para el rol <span class="font-medium">coder</span>.</div>`;
@@ -32,12 +35,15 @@ export async function Coder_ClanController() {
     creating: false,
   };
 
-  // ================== Eventos ==================
-  searchEl?.addEventListener("input", debounce((e) => {
-    state.search = e.target.value.trim();
-    state.page = 1;
-    renderList();
-  }, 250));
+  /* ================== Eventos ================== */
+  searchEl?.addEventListener(
+    "input",
+    debounce((e) => {
+      state.search = e.target.value.trim();
+      state.page = 1;
+      renderList();
+    }, 250)
+  );
 
   pagerEl?.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-page]");
@@ -51,25 +57,33 @@ export async function Coder_ClanController() {
   myCard?.addEventListener("click", (e) => {
     const open = e.target.closest("#btn-open-create");
     const cancel = e.target.closest("#btn-cancel-create");
-    if (open) { state.creating = true; renderMyCard(); }
-    if (cancel) { state.creating = false; renderMyCard(); }
+    if (open) {
+      state.creating = true;
+      renderMyCard();
+    }
+    if (cancel) {
+      state.creating = false;
+      renderMyCard();
+    }
   });
 
   myCard?.addEventListener("submit", onCreateSubmit);
 
-  // ================== Carga ==================
+  /* ================== Carga inicial ================== */
   await loadGroups();
 
-  // ================== Funciones ==================
+  /* ================== Funciones ================== */
   async function loadGroups() {
+    // si no hay nodos, simplemente no hacemos nada
     if (!myCard || !listEl || !pagerEl) return;
+
     myCard.innerHTML = `<div class="text-gray-500 text-sm">Cargando tu clan…</div>`;
     renderListSkeleton(listEl);
 
     try {
-      const res = await GroupsAPI.list().catch(() => null);
+      const res = (await GroupsAPI?.list?.()) ?? null;
 
-      // Soporta muchos formatos de respuesta
+      // Soporta múltiples shapes
       const rawArr =
         (Array.isArray(res) && res) ||
         res?.groups ||
@@ -78,17 +92,20 @@ export async function Coder_ClanController() {
         res?.items ||
         [];
 
-      // Normaliza cada grupo para que la UI tenga llaves consistentes
+      // Normaliza formato
       state.all = rawArr.map(normalizeGroup);
 
-      // Detecta si el usuario ya pertenece a un grupo por group_id
+      // Detecta si el usuario ya pertenece a un grupo (group_id)
       const myGroupId = toInt(currentUser?.group_id);
-      state.mine = myGroupId != null
-        ? state.all.find(g => eqId(g.id_group, myGroupId)) ?? null
-        : null;
+      state.mine =
+        myGroupId != null
+          ? state.all.find((g) => eqId(g.id_group, myGroupId)) ?? null
+          : null;
 
       const myId = state.mine?.id_group ?? null;
-      state.others = myId ? state.all.filter(g => !eqId(g.id_group, myId)) : state.all.slice();
+      state.others = myId
+        ? state.all.filter((g) => !eqId(g.id_group, myId))
+        : state.all.slice();
 
       renderMyCard();
       renderList();
@@ -118,7 +135,7 @@ export async function Coder_ClanController() {
     let filtered = state.others;
 
     if (q) {
-      filtered = filtered.filter(g => {
+      filtered = filtered.filter((g) => {
         const name = String(g.name || "").toLowerCase();
         const desc = String(g.description || "").toLowerCase();
         return name.includes(q) || desc.includes(q);
@@ -144,8 +161,10 @@ export async function Coder_ClanController() {
     if (!form) return;
     e.preventDefault();
 
-    const name = form.querySelector("input[name=name]")?.value?.trim() || "";
-    const description = form.querySelector("textarea[name=description]")?.value?.trim() || "";
+    const name =
+      form.querySelector("input[name=name]")?.value?.trim() || "";
+    const description =
+      form.querySelector("textarea[name=description]")?.value?.trim() || "";
     const errorEl = form.querySelector("#create-error");
     const okEl = form.querySelector("#create-ok");
     const submitBtn = form.querySelector("button[type=submit]");
@@ -154,7 +173,8 @@ export async function Coder_ClanController() {
     if (okEl) okEl.textContent = "";
 
     if (name.length < 3) {
-      errorEl && (errorEl.textContent = "El nombre debe tener al menos 3 caracteres.");
+      if (errorEl)
+        errorEl.textContent = "El nombre debe tener al menos 3 caracteres.";
       return;
     }
 
@@ -163,19 +183,21 @@ export async function Coder_ClanController() {
 
     try {
       const created = await createGroupSafe({ name, description });
-      if (!created || !(created.id_group ?? created.id)) throw new Error("No se pudo crear el clan.");
+      if (!created || !(created.id_group ?? created.id))
+        throw new Error("No se pudo crear el clan.");
 
-      okEl && (okEl.textContent = "¡Clan creado con éxito!");
+      if (okEl) okEl.textContent = "¡Clan creado con éxito!";
       const gid = created.id_group ?? created.id;
 
-      // actualiza userStore para que se muestre como "mi clan"
-      const u = userStore.get?.("user") ?? userStore.get?.() ?? null;
-      if (u) userStore.set?.({ ...u, group_id: gid });
+      // actualiza userStore para que se refleje como "mi clan"
+      const u = (userStore?.get?.("user") ?? userStore?.get?.()) || null;
+      if (u && userStore?.set) userStore.set({ ...u, group_id: gid });
 
       await loadGroups();
     } catch (err) {
       console.error("Crear clan error:", err);
-      errorEl && (errorEl.textContent = err?.message || "Error al crear el clan.");
+      if (errorEl)
+        errorEl.textContent = err?.message || "Error al crear el clan.";
     } finally {
       submitBtn?.removeAttribute("disabled");
       submitBtn?.classList.remove("opacity-60", "cursor-not-allowed");
@@ -185,25 +207,14 @@ export async function Coder_ClanController() {
 
 /* ================== Normalizador clave ================== */
 function normalizeGroup(g) {
-  // Acepta muchas variantes de claves y devuelve una forma estable:
-  // { id_group, name, description, members_count, members?[] }
+  // Retorna una forma estable para la UI:
+  // { id_group, name, description, members_count, challenges_count, members?[] }
   const id_group = g.id_group ?? g.id ?? null;
 
-  // nombre: tu BD usa group_name
-  const name =
-    g.name ??
-    g.group_name ??
-    g.title ??
-    "Sin nombre";
-
-  // descripción: puede no existir en tu schema de groups -> cadena vacía
+  const name = g.name ?? g.group_name ?? g.title ?? "Sin nombre";
   const description =
-    g.description ??
-    g.group_desc ??
-    g.desc ??
-    "";
+    g.description ?? g.group_desc ?? g.desc ?? "";
 
-  // conteos opcionales
   const members_count =
     toInt(g.members_count) ??
     toInt(g.member_count) ??
@@ -211,9 +222,7 @@ function normalizeGroup(g) {
     0;
 
   const challenges_count =
-    toInt(g.challenges_count) ??
-    toInt(g.challenge_count) ??
-    0;
+    toInt(g.challenges_count) ?? toInt(g.challenge_count) ?? 0;
 
   return {
     id_group,
@@ -222,7 +231,6 @@ function normalizeGroup(g) {
     members_count,
     challenges_count,
     members: Array.isArray(g.members) ? g.members : undefined,
-    // conserva originales por si algo más los necesita
     _raw: g,
   };
 }
@@ -234,9 +242,18 @@ function myClanCard(g) {
   const membersCount = toInt(g.members_count) ?? 0;
   const challengesCount = toInt(g.challenges_count) ?? 0;
 
-  const membersList = Array.isArray(g.members) && g.members.length
-    ? g.members.slice(0, 6).map(m => `<li>• ${escapeHtml(m.name || m.email || "Miembro")}</li>`).join("")
-    : `<li class="text-gray-500">Miembros no disponibles</li>`;
+  const membersList =
+    Array.isArray(g.members) && g.members.length
+      ? g.members
+          .slice(0, 6)
+          .map(
+            (m) =>
+              `<li>• ${escapeHtml(
+                m.name || m.email || "Miembro"
+              )}</li>`
+          )
+          .join("")
+      : `<li class="text-gray-500">Miembros no disponibles</li>`;
 
   return `
     <article class="rounded-xl border p-4 bg-white shadow-sm" data-group-id="${g.id_group}">
@@ -292,12 +309,98 @@ function clanCard(g) {
   `;
 }
 
+/* ================== UI skeleton & pagination (¡FIX!) ================== */
+function renderListSkeleton(target, n = 6) {
+  if (!target) return;
+  const item = () => `
+    <article class="border rounded-xl p-4 bg-white shadow-sm animate-pulse">
+      <div class="h-5 w-40 bg-gray-200 rounded mb-3"></div>
+      <div class="h-3 w-full bg-gray-100 rounded mb-1"></div>
+      <div class="h-3 w-2/3 bg-gray-100 rounded"></div>
+      <div class="flex items-center gap-3 mt-4">
+        <span class="h-4 w-16 bg-gray-100 rounded"></span>
+      </div>
+    </article>
+  `;
+  target.innerHTML = Array.from({ length: n }).map(item).join("");
+}
+
+function renderPagination({ page = 1, pages = 1, window = 5 }) {
+  if (pages <= 1) return "";
+
+  const half = Math.floor(window / 2);
+  let start = Math.max(1, page - half);
+  let end = Math.min(pages, start + window - 1);
+  start = Math.max(1, end - window + 1);
+
+  const btn = (p, label = p, extra = "") =>
+    `<button data-page="${p}" class="px-3 py-1.5 rounded-lg border text-sm ${extra}">${label}</button>`;
+
+  const disabled = "opacity-50 cursor-not-allowed";
+  const current = "bg-black text-white border-black";
+
+  const parts = [];
+  // Prev
+  parts.push(
+    page > 1
+      ? btn(page - 1, "Anterior")
+      : `<button class="px-3 py-1.5 rounded-lg border text-sm ${disabled}">Anterior</button>`
+  );
+
+  // Primera + elipsis
+  if (start > 1) {
+    parts.push(btn(1, "1"));
+    if (start > 2) parts.push(`<span class="px-2 text-sm text-gray-500">…</span>`);
+  }
+
+  // Ventana
+  for (let p = start; p <= end; p++) {
+    parts.push(btn(p, String(p), p === page ? current : ""));
+  }
+
+  // Elipsis + última
+  if (end < pages) {
+    if (end < pages - 1) parts.push(`<span class="px-2 text-sm text-gray-500">…</span>`);
+    parts.push(btn(pages, String(pages)));
+  }
+
+  // Next
+  parts.push(
+    page < pages
+      ? btn(page + 1, "Siguiente")
+      : `<button class="px-3 py-1.5 rounded-lg border text-sm ${disabled}">Siguiente</button>`
+  );
+
+  return `<div class="flex flex-wrap items-center gap-2">${parts.join("")}</div>`;
+}
+
 /* ================== Utils ================== */
-function debounce(fn, ms = 300) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
-function escapeHtml(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
-function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
-function toInt(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
-function eqId(a, b) { if (a == null || b == null) return false; return String(a) === String(b); }
+function debounce(fn, ms = 300) {
+  let t;
+  return (...a) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...a), ms);
+  };
+}
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+function clamp(x, a, b) {
+  return Math.max(a, Math.min(b, x));
+}
+function toInt(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+function eqId(a, b) {
+  if (a == null || b == null) return false;
+  return String(a) === String(b);
+}
 
 /* ================== API fallback ================== */
 async function createGroupSafe({ name, description }) {
@@ -312,5 +415,9 @@ async function createGroupSafe({ name, description }) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data?.msg || `HTTP ${res.status}`);
   const g = data?.group || data;
-  return { id_group: g.id_group ?? g.id, name: g.name ?? g.group_name, description: g.description ?? "" };
+  return {
+    id_group: g.id_group ?? g.id,
+    name: g.name ?? g.group_name ?? name,
+    description: g.description ?? "",
+  };
 }
