@@ -16,7 +16,7 @@ export default function Sidebar(active = "#/dashboard") {
       <a href="${hash}"
          class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition
                 ${isActive
-                  ? "bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-md"
+                  ? "bg-chart-4 text-white shadow-md"
                   : "text-slate-700 hover:bg-slate-50"}">
         <i data-lucide="${iconName}" class="h-5 w-5 ${isActive ? "opacity-100" : "opacity-80 group-hover:opacity-100"}"></i>
         <span class="font-medium tracking-tight">${label}</span>
@@ -28,10 +28,8 @@ export default function Sidebar(active = "#/dashboard") {
   const menuInner = `
     <!-- Brand -->
     <div class="h-16 flex items-center px-4 border-b border-slate-200/70">
-      <div class="h-10 w-10 rounded-xl bg-purple-600 text-white grid place-content-center font-bold shadow-sm">R</div>
       <div class="ml-3">
-        <div class="font-semibold text-lg leading-tight">Riwi</div>
-        <div class="text-[11px] uppercase tracking-wide text-slate-400">Level up coding</div>
+        <img src="./public/RC-LargeLogo.png">
       </div>
     </div>
 
@@ -52,7 +50,7 @@ export default function Sidebar(active = "#/dashboard") {
     <!-- User / Logout -->
     <div class="border-t border-slate-200/70 p-4">
       <div class="flex items-center gap-3">
-        <div class="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-purple-600 to-purple-500 text-white grid place-content-center text-sm font-semibold">
+        <div class="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-chart-4 to-chart-1 text-white grid place-content-center text-sm font-semibold">
           ${(name || "U").slice(0,1).toUpperCase()}
         </div>
         <div class="min-w-0">
@@ -60,8 +58,7 @@ export default function Sidebar(active = "#/dashboard") {
           <div class="text-xs text-slate-400 truncate">Welcome back</div>
         </div>
         <button id="sidebar-logout"
-                class="ml-auto px-3 py-1.5 text-xs rounded-lg border border-red-500 text-red-600 
-                       hover:bg-red-50 hover:text-red-700 hover:border-red-600 transition inline-flex items-center gap-2">
+                class="ml-auto px-3 py-1.5 text-xs rounded-lg border border-red-500 text-red-600 hover:border-red-600 cursor-pointer transition inline-flex items-center gap-2">
           <i data-lucide="log-out" class="h-4 w-4"></i>
           Logout
         </button>
@@ -79,7 +76,7 @@ export default function Sidebar(active = "#/dashboard") {
     </button>
 
     <!-- Desktop sidebar -->
-    <aside class="w-68 bg-white/95 backdrop-blur border-r border-slate-200 hidden md:flex flex-col rounded-r-2xl shadow-sm">
+    <aside class="w-68 bg-card backdrop-blur border-r border-slate-200 hidden md:flex flex-col rounded-r-2xl shadow-sm">
       ${menuInner}
     </aside>
 

@@ -2,10 +2,10 @@
 
 export default function LoginView() {
   return `
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+    <div class="min-h-screen flex items-center justify-center p-4">
       <div class="w-full max-w-md space-y-8">
 
-        <div class="rounded-2xl shadow-xl border-0 bg-white/95 backdrop-blur-sm p-6">
+        <div class="rounded-2xl shadow-xl border-0 bg-card backdrop-blur-sm p-6">
           <div class="flex justify-center">
             <img class="w-80" src="./public/RC-ShortLogo.png">
           </div>
@@ -34,7 +34,7 @@ export default function LoginView() {
                 </div>
               </div>
 
-              <button type="submit" class="w-full h-12 bg-blue-600 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors duration-200">
+              <button type="submit" class="w-full h-12 bg-chart-1 hover:bg-chart-4 cursor-pointer text-white font-medium rounded-xl transition-colors duration-200">
                 Sign in
               </button>
 

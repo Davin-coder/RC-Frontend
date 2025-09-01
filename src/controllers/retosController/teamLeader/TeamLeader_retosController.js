@@ -34,7 +34,7 @@ export async function TeamLeader_retosController() {
             ${ch.deadline ? `| Fecha límite: ${ch.deadline.split("T")[0]}` : ""}
           </p>
           <div class="flex space-x-2 mt-4">
-            <button class="edit-challenge bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg" data-id="${ch.id_challenge}">Editar</button>
+            <button class="edit-challenge bg-chart-4 hover:bg-chart-1 text-white px-3 py-1 rounded-lg" data-id="${ch.id_challenge}">Editar</button>
             <button class="delete-challenge bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg" data-id="${ch.id_challenge}">Eliminar</button>
           </div>
         `;

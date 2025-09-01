@@ -4,7 +4,7 @@ export function TeamLeader_retosView() {
       <h1 class="text-2xl md:text-3xl font-bold">ADMINISTRAR RETOS</h1>
       
       <!-- Create / Edit Challenge Form -->
-      <form id="challenge-form" class="space-y-4 bg-white shadow-md rounded-xl p-4 border">
+      <form id="challenge-form" class="space-y-4 bg-card shadow-md rounded-xl p-4 border">
         <h2 class="text-xl font-semibold">Crear / Editar Reto</h2>
         
         <div>
