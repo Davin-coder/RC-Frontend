@@ -1,4 +1,4 @@
-// src/controllers/projects/coder/Coder_VitrinaController.js
+// src/controllers/projects/teamLeader/TeamLeader_VitrinaController.js
 import { ProjectsAPI } from "../../../utils/api.js";
 import { userStore } from "../../../utils/userStore.js";
 
@@ -7,8 +7,9 @@ export async function TeamLeader_VitrinaController() {
   if (!listEl) return;
 
   const role = String(userStore.role() || "").toLowerCase();
-  if (role !== "coder") {
-    listEl.innerHTML = `<div class="text-sm text-gray-500">Section available for <span class="font-medium">coder</span> role only.</div>`;
+  const isTL = role === "team_leader" || role === "admin";
+  if (!isTL) {
+    listEl.innerHTML = `<div class="col-span-full text-sm text-gray-500">Section available for <span class="font-medium">team_leader</span> or <span class="font-medium">admin</span> only.</div>`;
     return;
   }
 
@@ -19,7 +20,7 @@ export async function TeamLeader_VitrinaController() {
     render(projects);
     bindEvents();
   } catch (err) {
-    console.error("Coder_VitrinaController error:", err);
+    console.error("TeamLeader_VitrinaController error:", err);
     listEl.innerHTML = `<div class="col-span-full text-sm text-red-600">Could not load projects.</div>`;
   }
 
@@ -55,9 +56,17 @@ export async function TeamLeader_VitrinaController() {
             ${demo ? `<a href="${escapeAttr(demo)}" target="_blank" rel="noopener" class="px-3 py-1.5 text-sm rounded-lg border hover:bg-gray-50">Demo</a>` : ``}
           </div>
         </div>
-        <button class="toggle-desc px-3 py-1.5 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700" data-id="${id}">
-          View Description
-        </button>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button class="toggle-desc px-3 py-1.5 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700" data-id="${id}">
+            View Description
+          </button>
+          <!-- Si más adelante habilitas moderación/CRUD para TL, puedes usar estos botones:
+          <button class="tl-edit px-3 py-1.5 text-sm rounded-lg border hover:bg-gray-50" data-id="${id}">Edit</button>
+          <button class="tl-delete px-3 py-1.5 text-sm rounded-lg border hover:bg-gray-50 text-red-600" data-id="${id}">Delete</button>
+          -->
+        </div>
+
         <p id="proj-desc-${id}" class="text-sm text-gray-700 hidden">${escapeHtml(desc)}</p>
       </article>
     `;
@@ -68,11 +77,31 @@ export async function TeamLeader_VitrinaController() {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-id");
         const desc = document.getElementById(`proj-desc-${id}`);
+        if (!desc) return;
         const isHidden = desc.classList.contains("hidden");
         desc.classList.toggle("hidden", !isHidden);
         btn.textContent = isHidden ? "Hide Description" : "View Description";
       });
     });
+
+    // Ganchos por si luego agregas acciones TL:
+    /*
+    listEl.querySelectorAll(".tl-edit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        // TODO: abrir modal de edición o navegar a ruta de edición
+        console.log("Edit project", id);
+      });
+    });
+
+    listEl.querySelectorAll(".tl-delete").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        // TODO: confirmar y llamar API para borrar
+        console.log("Delete project", id);
+      });
+    });
+    */
   }
 
   function escapeHtml(s) {
