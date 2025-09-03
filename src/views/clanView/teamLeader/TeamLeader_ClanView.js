@@ -16,7 +16,7 @@ export function TeamLeader_ClanView() {
         <div class="relative max-w-md w-full">
           <input id="tl-groups-search" type="search"
             placeholder="Buscar por nombre, creador…"
-            class="w-full border rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring" />
+            class="w-full border rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus: ng" />
           <span class="absolute left-3 top-2.5 text-gray-400">🔎</span>
         </div>
         <div class="flex items-center gap-2 text-sm">
